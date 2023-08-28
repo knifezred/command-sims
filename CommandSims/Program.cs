@@ -1,11 +1,11 @@
 ﻿using CommandSims.Core;
+using CommandSims.Data;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        UI.PrintLine("Welcome to mud life!", ConsoleColor.Yellow);
-        // 读取存档
+        UI.PrintLine("Welcome to command sims!", ConsoleColor.Yellow);
         UI.PrintLine("请输入存档名称或开启新存档", ConsoleColor.DarkGray);
         // 加载事件
         ReadCommand(Console.ReadLine(), 1);
@@ -87,12 +87,22 @@ internal class Program
 
     static void LoadProfileArchive(List<string> commands)
     {
+        using var db = new SimsContext();
         foreach (string command in commands)
         {
-            if (command == "张三")
+            var archive = db.Archives.FirstOrDefault(x => x.Name == command);
+            if (archive != null)
             {
-                UI.PrintLine("存档加载成功");
-                UI.ShowPlayerStatus(1);
+                var player = db.Players.FirstOrDefault(x => x.ArchiveId == archive.Id);
+                if (player != null)
+                {
+                    UI.PrintLine("存档加载成功");
+                    UI.ShowPlayerStatus(player.Id);
+                }
+                else
+                {
+                    PlayerEvent.Born();
+                }
             }
             else
             {
