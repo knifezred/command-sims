@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CommandSims.Entity.Npc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,6 @@ namespace CommandSims.Data
 {
     public class SimsContext : DbContext
     {
-        public DbSet<Archive> Archives { get; set; }
 
         public DbSet<Player> Players { get; set; }
 
@@ -18,9 +18,8 @@ namespace CommandSims.Data
 
         public SimsContext()
         {
-            var folder = Environment.SpecialFolder.LocalApplicationData;
-            var path = Environment.GetFolderPath(folder);
-            DbPath = System.IO.Path.Join(path, "sims.db");
+            // todo 根据存档更换数据库
+            DbPath = Path.Join(Environment.CurrentDirectory, "App_Data", "sims.db");
         }
 
         // The following configures EF to create a Sqlite database file in the

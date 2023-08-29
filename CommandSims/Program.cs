@@ -1,11 +1,18 @@
-﻿using CommandSims.Core;
+﻿using CommandSims.Constants;
+using CommandSims.Core;
 using CommandSims.Data;
+using CommandSims.Entity.Archive;
+using CommandSims.Stories;
+using CommandSims.Utils;
+using Spectre.Console;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        UI.PrintLine("Welcome to command sims!", ConsoleColor.Yellow);
+        AnsiConsole.MarkupLine("Welcome to [green]command sims[/]!");
         UI.PrintLine("请输入存档名称或开启新存档", ConsoleColor.DarkGray);
         // 加载事件
         ReadCommand(Console.ReadLine(), 1);
@@ -90,18 +97,23 @@ internal class Program
         using var db = new SimsContext();
         foreach (string command in commands)
         {
-            var archive = db.Archives.FirstOrDefault(x => x.Name == command);
+            var archives = FileUtils.List(PathConst.ARCHIVE_PATH);
+            // todo 读取存档文件
+            var archive = archives.AsQueryable().Where(x => x.Name == command).FirstOrDefault();
             if (archive != null)
             {
-                var player = db.Players.FirstOrDefault(x => x.ArchiveId == archive.Id);
-                if (player != null)
+                var archiveDataText = FileUtils.ReadFile(archive.FullName);
+
+                CurrentActivityData activityData = new CurrentActivityData();
+                var archiveData = JsonSerializer.Deserialize<ArchiveData>(archiveDataText);
+                if (archiveData != null)
                 {
+                    activityData.ArchiveData = archiveData;
                     UI.PrintLine("存档加载成功");
-                    UI.ShowPlayerStatus(player.Id);
                 }
                 else
                 {
-                    PlayerEvent.Born();
+                    UI.PrintLine("存档读取失败，请重新开档或读取其他存档");
                 }
             }
             else
@@ -111,20 +123,24 @@ internal class Program
                 var choose = Console.ReadKey();
                 if (choose.KeyChar.ToString() == "1")
                 {
-
+                    Console.WriteLine();
+                    SomeoneBorned someoneBorned = new();
+                    someoneBorned.PlayerBorn();
                 }
                 else if (choose.KeyChar.ToString() == "2")
                 {
                     UI.PrintLine("请输入存档名称");
                     var archiveName = Console.ReadLine();
-                    UI.PrintLine("存档加载成功");
+                    if (archiveName != null)
+                    {
+                        LoadProfileArchive(new List<string> { archiveName });
+                    }
                 }
                 else
                 {
                     UI.PrintLine("无法识别的输入选项，将退回");
                 }
             }
-
         }
     }
 

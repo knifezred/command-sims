@@ -11,14 +11,14 @@ namespace CommandSims.Core
 
         #region Console.Write重写，支持颜色设置，打字机效果
 
-        public static void Print(string message, ConsoleColor color = ConsoleColor.White)
+        public static void Print(string message, ConsoleColor color = ConsoleColor.Green)
         {
             Console.ForegroundColor = color;
             Typewriter(message);
             Console.ForegroundColor = ConsoleColor.White;
         }
 
-        public static void PrintLine(string message, ConsoleColor color = ConsoleColor.White)
+        public static void PrintLine(string message, ConsoleColor color = ConsoleColor.Green)
         {
             Console.ForegroundColor = color;
             Typewriter(message);

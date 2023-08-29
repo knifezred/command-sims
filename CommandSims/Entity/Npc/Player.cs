@@ -6,20 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommandSims.Data
+namespace CommandSims.Entity.Npc
 {
     /// <summary>
     /// 角色信息
     /// </summary>
     public class Player
     {
-        [Key]
         public int Id { get; set; }
-        /// <summary>
-        /// 存档id
-        /// </summary>
-        [ForeignKey("player_archive_id_fk")]
-        public int ArchiveId { get; set; }
         /// <summary>
         /// 姓名
         /// </summary>

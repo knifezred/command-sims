@@ -9,8 +9,6 @@
 
   <ItemGroup>
     <Folder Include="App_Data\Saves\" />
-    <Folder Include="Service\" />
-    <Folder Include="Configs\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Spectre.Console" Version="0.47.0" />
   </ItemGroup>
 
 </Project>

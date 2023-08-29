@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 namespace CommandSims.Enums
 {
     /// <summary>
-    /// 性别
+    /// 种族
     /// </summary>
-    public enum GenderEnum
+    public enum RaceEnum
     {
-        [Description("男")]
-        Male = 1,
-        [Description("女")]
-        Female = 2,
-        [Description("其他")]
-        Other = 3,
+        [Description("人族")]
+        Human = 1,
+        [Description("高精灵")]
+        HighElf,
+        [Description("兽族")]
+        Orc,
     }
 }

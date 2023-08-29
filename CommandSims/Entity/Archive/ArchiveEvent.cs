@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommandSims.Core
+namespace CommandSims.Entity.Archive
 {
-    public class DataBase
+    public class ArchiveEvent
     {
 
     }
