@@ -1,18 +1,15 @@
 ﻿using CommandSims.Entity.Archive;
 using CommandSims.Entity.Npc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CommandSims.Service;
 
 namespace CommandSims.Core
 {
     public class Sims
     {
-        public static GameFramework GameFramework { get; set; }
 
-        public static WorldGenerator WorldGenerator { get; set; }
+        public static GameFramework Game { get; set; }
+
+        public static WorldFramework World { get; set; }
 
         public static ArchiveData PlayerData { get; set; }
 
@@ -20,14 +17,19 @@ namespace CommandSims.Core
 
         public static void StartInit()
         {
-            GameFramework = new GameFramework();
-            WorldGenerator = new WorldGenerator();
+            Game = new GameFramework();
+            World = new WorldFramework();
             PlayerData = new ArchiveData
             {
-                PlayerInfo = new Entity.Npc.Player(),
+                PlayerInfo = new Player(),
                 BagItems = new List<ArchiveItem>(),
                 StorageItems = new List<ArchiveItem>()
             };
+            // 加载Login页面
+            UI.LoadStartPanel();
+            // 释放UI
+            UI.SetFree();
+            Sims.Game.ReadCommand(Console.ReadLine(), 1);
         }
     }
 }

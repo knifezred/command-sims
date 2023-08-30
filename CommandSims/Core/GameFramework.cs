@@ -56,8 +56,10 @@ namespace CommandSims.Core
                 var archiveData = JsonSerializer.Deserialize<ArchiveData>(archiveDataText);
                 if (archiveData != null)
                 {
-                    Sims.PlayerData = archiveData;
                     UI.PrintLine("存档加载成功");
+                    Sims.PlayerData = archiveData;
+                    WorldFramework.WorldTime = archiveData.WorldTime;
+                    Sims.World.GoRandomWeather();
                     UI.ShowPalyerInfo();
                 }
                 else
@@ -77,8 +79,7 @@ namespace CommandSims.Core
                 if (result.StartsWith("1"))
                 {
                     Console.WriteLine();
-                    S0_SomeoneBorned someoneBorned = new();
-                    someoneBorned.PlayerBorn();
+                    new S0_SomeoneBorned().PlayerBorn();
                 }
                 else if (result.StartsWith("2"))
                 {
@@ -97,6 +98,60 @@ namespace CommandSims.Core
 
         }
 
+        #endregion
+
+        #region 通用指令
+
+
+        public void ReadCommand(string? command, int eventId)
+        {
+            if (command != null)
+            {
+                var commands = command.Split(" ");
+                switch (commands[0])
+                {
+                    case "help":
+                        UI.HelpInfo(commands);
+                        break;
+                    case "load":
+                    case "读档":
+                        Sims.Game.LoadArchive(commands[1]);
+                        break;
+                    case "save":
+                    case "存档":
+                        Sims.Game.SaveArchive(commands[1]);
+                        break;
+                    case "exit":
+                    case "退出":
+                        UI.PrintLine("自动保存中...");
+                        Sims.Game.SaveArchive("AutoSaved");
+                        UI.PrintLine("自动保存成功");
+                        eventId = 0;
+                        break;
+                    case "open":
+                    case "o":
+                    case "打开":
+
+                        break;
+                    case "learn":
+                    case "l":
+                    case "学":
+                        break;
+                    case "bag":
+                        UI.PrintLine("打开了背包");
+                        break;
+                    default:
+                        UI.PrintLine("无效指令，请重新输入", ConsoleColor.DarkGray);
+                        break;
+                }
+
+            }
+            if (eventId > 0)
+            {
+                UI.SetFree();
+                ReadCommand(Console.ReadLine(), eventId);
+            }
+        }
         #endregion
     }
 }

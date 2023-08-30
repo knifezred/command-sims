@@ -26,5 +26,7 @@ namespace CommandSims.Entity.Archive
 
         public List<ArchiveItem> StorageItems { get; set; }
 
+        public object WorldData { get; set; }
+
     }
 }

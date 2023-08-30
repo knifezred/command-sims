@@ -7,15 +7,19 @@ using System.Threading.Tasks;
 
 namespace CommandSims.Core
 {
-    public class WorldGenerator
+    public class WorldFramework
     {
         private Random random;
 
-        public WorldGenerator()
+        public WorldFramework()
         {
             random = new();
         }
 
+        /// <summary>
+        /// 创建新世界
+        /// </summary>
+        /// <param name="seed"></param>
         public void CreateNewWorld(int seed)
         {
             if (seed > 0)
@@ -30,6 +34,14 @@ namespace CommandSims.Core
             SetWorldStartTime();
             // 设置默认天气
             GoRandomWeather();
+        }
+
+        /// <summary>
+        /// 初始化世界数据
+        /// </summary>
+        public void InitWorldData()
+        {
+
         }
 
         #region 天气系统
@@ -51,6 +63,11 @@ namespace CommandSims.Core
             {
                 Text="天空飘来几朵云",
                 Value="多云"
+            },
+            new SimpleListItem()
+            {
+                Text="一片乌云飘来，下起了小雨",
+                Value="小雨"
             },
         };
 

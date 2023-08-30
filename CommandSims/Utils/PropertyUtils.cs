@@ -9,12 +9,12 @@ using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations;
 using KnifeZ.Unity.Extensions;
 
-namespace KnifeZ.Unity.Helpers
+namespace CommandSims.Utils
 {
     /// <summary>
     /// 属性辅助类
     /// </summary>
-    public static class PropertyHelper
+    public static class PropertyUtils
     {
         /// <summary>
         /// 获取属性名
@@ -110,7 +110,7 @@ namespace KnifeZ.Unity.Helpers
         /// <returns>属性Id</returns>
         public static string GetPropertyId(this Expression expression, bool getAll = true)
         {
-            return GetPropertyName(expression, getAll).GetIdByName();
+            return expression.GetPropertyName(getAll).GetIdByName();
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace KnifeZ.Unity.Helpers
         /// <returns>属性显示名称</returns>
         public static string GetPropertyDisplayName(this Expression expression)
         {
-            return GetPropertyDisplayName(expression.GetPropertyInfo());
+            return expression.GetPropertyInfo().GetPropertyDisplayName();
         }
 
 
@@ -412,7 +412,7 @@ namespace KnifeZ.Unity.Helpers
                 var gs = propertyType.GenericTypeArguments;
                 try
                 {
-                    val = ConvertValue(value, gs[0]);
+                    val = value.ConvertValue(gs[0]);
                 }
                 catch { }
             }

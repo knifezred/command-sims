@@ -1,4 +1,4 @@
-﻿using KnifeZ.Unity.Helpers;
+﻿using CommandSims.Utils;
 using KnifeZ.Unity.Models;
 using System;
 using System.Collections;
@@ -46,7 +46,7 @@ namespace KnifeZ.Unity.Extensions
                 for (int i = 0; i < names.Length; i++)
                 {
                     var name = names[i];
-                    var newitem = new ComboSelectListItem { Text = PropertyHelper.GetEnumDisplayName(self, name), Value = values.GetValue(i).ToString() };
+                    var newitem = new ComboSelectListItem { Text = PropertyUtils.GetEnumDisplayName(self, name), Value = values.GetValue(i).ToString() };
                     if (value is string)
                     {
                         if (value != null)

@@ -23,6 +23,7 @@ namespace CommandSims.Utils
             }
             return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
         }
+
         /// <summary>
         /// 获取相对路径
         /// </summary>
