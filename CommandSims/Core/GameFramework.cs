@@ -23,6 +23,7 @@ namespace CommandSims.Core
         /// <param name="saveName"></param>
         public void SaveArchive(string saveName)
         {
+            UI.PrintLine("存档保存中...");
             if (!saveName.Any())
             {
                 saveName = "AutoSaved";
@@ -30,6 +31,7 @@ namespace CommandSims.Core
             var archivePath = Path.Join(PathConst.ARCHIVE_PATH, saveName);
             var data = JsonSerializer.Serialize(Sims.PlayerData);
             FileUtils.WriteFile(data, archivePath);
+            UI.PrintLine("存档保存成功");
         }
 
         /// <summary>
@@ -114,17 +116,15 @@ namespace CommandSims.Core
                         break;
                     case "load":
                     case "读档":
-                        Sims.Game.LoadArchive(commands[1]);
+                        Sims.Game.LoadArchive(commands.Length > 1 ? commands[1] : "AutoSaved");
                         break;
                     case "save":
                     case "存档":
-                        Sims.Game.SaveArchive(commands[1]);
+                        Sims.Game.SaveArchive(commands.Length > 1 ? commands[1] : "AutoSaved");
                         break;
                     case "exit":
                     case "退出":
-                        UI.PrintLine("自动保存中...");
                         Sims.Game.SaveArchive("AutoSaved");
-                        UI.PrintLine("自动保存成功");
                         eventId = 0;
                         break;
                     case "command":
@@ -200,7 +200,7 @@ namespace CommandSims.Core
                 //npc
                 player = Sims.NpcList.FirstOrDefault(x => x.Id == playerId);
             }
-            if(action==PlayerActionEnum.Attack)
+            if (action == PlayerActionEnum.Attack)
             {
 
             }
