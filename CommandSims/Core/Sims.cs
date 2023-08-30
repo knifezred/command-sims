@@ -25,11 +25,6 @@ namespace CommandSims.Core
                 BagItems = new List<ArchiveItem>(),
                 StorageItems = new List<ArchiveItem>()
             };
-            // 加载Login页面
-            UI.LoadStartPanel();
-            // 释放UI
-            UI.SetFree();
-            Sims.Game.ReadCommand(Console.ReadLine(), 1);
         }
     }
 }

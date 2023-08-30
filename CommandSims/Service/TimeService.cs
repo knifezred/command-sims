@@ -44,7 +44,7 @@ namespace CommandSims.Service
         {
             return Task.Run(() =>
             {
-                _timer = new Timer(TimeWork, null, TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(30));
+                _timer = new Timer(TimeWork, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
             }, stoppingToken);
         }
 

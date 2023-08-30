@@ -1,16 +1,16 @@
 ﻿using CommandSims.Constants;
 using CommandSims.Data;
 using CommandSims.Entity.Archive;
+using CommandSims.Enums;
 using CommandSims.Stories;
 using CommandSims.Utils;
+using KnifeZ.Unity.Extensions;
 using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace CommandSims.Core
 {
@@ -102,7 +102,6 @@ namespace CommandSims.Core
 
         #region 通用指令
 
-
         public void ReadCommand(string? command, int eventId)
         {
             if (command != null)
@@ -128,6 +127,14 @@ namespace CommandSims.Core
                         UI.PrintLine("自动保存成功");
                         eventId = 0;
                         break;
+                    case "command":
+                    case "cmd":
+                    case "命令":
+                        PlayerCommandAction();
+                        break;
+                    case "look":
+                    case "观察":
+                        break;
                     case "open":
                     case "o":
                     case "打开":
@@ -136,9 +143,6 @@ namespace CommandSims.Core
                     case "learn":
                     case "l":
                     case "学":
-                        break;
-                    case "bag":
-                        UI.PrintLine("打开了背包");
                         break;
                     default:
                         UI.PrintLine("无效指令，请重新输入", ConsoleColor.DarkGray);
@@ -152,6 +156,75 @@ namespace CommandSims.Core
                 ReadCommand(Console.ReadLine(), eventId);
             }
         }
+
+        /// <summary>
+        /// 玩家操作命令
+        /// </summary>
+        public void PlayerCommandAction()
+        {
+            var enums = EnumExtension.ToListItems(typeof(PlayerActionEnum));
+            var actions = enums.Select(x => x.Text.ToString().ToString()).ToArray();
+            var result = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                .Title("[green]你可进行如下操作[/]")
+                .PageSize(10)
+                .AddChoices(actions));
+            var action = EnumExtension.GetValueFromName<PlayerActionEnum>(result);
+            switch (action)
+            {
+                case PlayerActionEnum.DoNothing:
+                    UI.PrintLine("你四下打量，决定什么也不做");
+                    break;
+                case PlayerActionEnum.Attack:
+                    CommandAttack(0);
+                    // todo 选择攻击对象
+                    break;
+                default:
+                    UI.PrintLine("尚未开发,敬请期待");
+                    break;
+            }
+
+        }
+
+        /// <summary>
+        /// 命令执行预检
+        /// </summary>
+        /// <param name="action">命令</param>
+        /// <param name="playerId">玩家ID</param>
+        /// <returns></returns>
+        public bool PreCommandActionCheck(PlayerActionEnum action, int playerId)
+        {
+            bool result = false;
+            var player = Sims.PlayerData.PlayerInfo;
+            if (playerId > 0)
+            {
+                //npc
+                player = Sims.NpcList.FirstOrDefault(x => x.Id == playerId);
+            }
+            if(action==PlayerActionEnum.Attack)
+            {
+
+            }
+            result = true;
+            return result;
+        }
+
+        public void CommandAttack(int playerId)
+        {
+            var canDo = PreCommandActionCheck(PlayerActionEnum.Attack, 0);
+            if (canDo)
+            {
+                UI.PrintLine("你决定攻击...");
+
+            }
+            else
+            {
+
+            }
+
+        }
+
         #endregion
+
+
     }
 }

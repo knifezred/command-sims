@@ -148,7 +148,9 @@ namespace CommandSims.Core
         /// <param name="commands"></param>
         public static void HelpInfo(string[] commands)
         {
-            UI.PrintLine("特殊命令：load/读档 [存档名字] save/存档 [存档名字] exit/退出", ConsoleColor.Magenta);
+            UI.PrintLine("系统命令：load/读档 [存档名字] save/存档 [存档名字] exit/退出", ConsoleColor.Magenta);
+            UI.PrintLine("特殊命令：command/cmd/命令 显示可操作命令", ConsoleColor.Magenta);
+            UI.PrintLine("特殊命令：look/观察 查看周围，将显示环境信息和当前地图的人物、可交互物品", ConsoleColor.Magenta);
             UI.PrintLine("通用命令：操作 目标 [数量] [使用对象]", ConsoleColor.Blue);
             UI.PrintLine("操作：open/o/打开 ", ConsoleColor.Green);
             UI.PrintLine("示例 打开背包(下同不再列举)：1. open bag    2. o bag    3. 打开 bag    4. 打开 背包", ConsoleColor.DarkGray);

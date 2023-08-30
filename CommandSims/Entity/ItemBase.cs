@@ -32,6 +32,14 @@ namespace CommandSims.Entity
         public double Weight { get; set; }
 
 
+        public void Use()
+        {
 
+        }
+
+        public void Unuse()
+        {
+
+        }
     }
 }
