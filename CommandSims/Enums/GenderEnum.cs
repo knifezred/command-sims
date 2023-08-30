@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,11 +13,11 @@ namespace CommandSims.Enums
     /// </summary>
     public enum GenderEnum
     {
-        [Description("男")]
+        [Display(Name = "男")]
         Male = 1,
-        [Description("女")]
+        [Display(Name = "女")]
         Female = 2,
-        [Description("其他")]
+        [Display(Name = "其他")]
         Other = 3,
     }
 }

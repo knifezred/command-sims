@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
 
@@ -115,6 +116,29 @@ namespace KnifeZ.Unity.Extensions
             return attribute?.Description;
         }
 
+        public static T GetValueFromName<T>(this string name) where T : Enum
+        {
+            var type = typeof(T);
+
+            foreach (var field in type.GetFields())
+            {
+                if (Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) is DisplayAttribute attribute)
+                {
+                    if (attribute.Name == name)
+                    {
+                        return (T)field.GetValue(null);
+                    }
+                }
+
+                if (field.Name == name)
+                {
+                    return (T)field.GetValue(null);
+                }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(name));
+        }
+
         /// <summary>
         /// 把枚举转换为键值对集合
         /// </summary>
@@ -126,12 +150,12 @@ namespace KnifeZ.Unity.Extensions
             {
                 throw new ArgumentException("传入的参数必须是枚举类型！", "enumType");
             }
-            Dictionary<int, String> enumDic = new Dictionary<int, string>();
+            Dictionary<int, string> enumDic = new Dictionary<int, string>();
             Array enumValues = Enum.GetValues(enumType);
             foreach (Enum enumValue in enumValues)
             {
-                Int32 key = Convert.ToInt32(enumValue);
-                String value = enumValue.ToString();
+                int key = Convert.ToInt32(enumValue);
+                string value = enumValue.ToString();
                 enumDic.Add(key, value);
             }
             return enumDic;

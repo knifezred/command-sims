@@ -1,4 +1,8 @@
-﻿using System;
+﻿using CommandSims.Enums;
+using CommandSims.Stories;
+using KnifeZ.Unity.Extensions;
+using Spectre.Console;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,26 +43,82 @@ namespace CommandSims.Core
 
         #endregion
 
-        /// <summary>
-        /// 显示角色状态
-        /// </summary>
-        public static void ShowPlayerStatus(string playerName)
+        public static void LoadStartPanel()
         {
-
+            AnsiConsole.Write(new FigletText("Command Sims").Centered().Color(Color.Blue));
+            var result = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                .Title("Welcome to [red]CommansSims[/]")
+                .PageSize(10)
+                .AddChoices(new string[]
+                {
+                    "新的开始","继续游戏"
+                }));
+            if (result == "继续游戏")
+            {
+                Sims.GameFramework.LoadArchive("");
+            }
+            if (result == "新的开始")
+            {
+                new S0_SomeoneBorned().PlayerBorn();
+            }
         }
+
+        #region Spectre.Console
+
+        public static RaceEnum ChooseRace()
+        {
+            var raceList = EnumExtension.ToListItems(typeof(RaceEnum));
+            if (raceList.Any())
+            {
+                var items = raceList.Select(x => x.Text.ToString().ToString()).ToArray();
+                var result = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                    .Title("What's your [green]race[/]?")
+                    .PageSize(10)
+                    .AddChoices(items));
+                AnsiConsole.MarkupLine($"What's your [green]race[/]? you choose {result} !");
+                return EnumExtension.GetValueFromName<RaceEnum>(result);
+            }
+            return RaceEnum.Human;
+        }
+
+        public static GenderEnum ChooseGender()
+        {
+            var enums = EnumExtension.ToListItems(typeof(GenderEnum));
+            if (enums.Any())
+            {
+                var items = enums.Select(x => x.Text.ToString().ToString()).ToArray();
+                var result = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                    .Title("What's your [green]gender[/]?")
+                    .PageSize(10)
+                    .AddChoices(items));
+                AnsiConsole.MarkupLine($"What's your [green]gender[/]? you are {result} !");
+                return EnumExtension.GetValueFromName<GenderEnum>(result);
+            }
+            return GenderEnum.Other;
+        }
+
+        #endregion
+
+        public static void ShowPalyerInfo()
+        {
+            PrintLine("------------------", ConsoleColor.Green);
+            PrintLine("姓名: " + Sims.PlayerData.PlayerInfo.Name, ConsoleColor.Cyan);
+            PrintLine("------------------", ConsoleColor.Green);
+        }
+
+
         /// <summary>
         /// 显示角色状态
         /// </summary>
-        /// <param name="playerId"></param>
-        public static void ShowPlayerStatus(int playerId)
+        public static void ShowNpcStatus(string npcName)
         {
-            PrintLine("------------------", ConsoleColor.Green);
-            PrintLine("姓名: 张三", ConsoleColor.Cyan);
-            PrintLine("相貌: 平平无奇", ConsoleColor.Cyan);
-            PrintLine("功力: 深不可测", ConsoleColor.Cyan);
-            PrintLine("情绪: 古井无波", ConsoleColor.Cyan);
-            PrintLine("------------------", ConsoleColor.Green);
-
+            var info = Sims.NpcList.FirstOrDefault(x => x.Name == npcName);
+            if (info != null)
+            {
+                PrintLine("------------------", ConsoleColor.Green);
+                PrintLine("姓名: " + info.Name, ConsoleColor.Cyan);
+                PrintLine("------------------", ConsoleColor.Green);
+            }
         }
     }
 }

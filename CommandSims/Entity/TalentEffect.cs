@@ -4,18 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommandSims.Entity.Npc
+namespace CommandSims.Entity
 {
-    /// <summary>
-    /// 天赋
-    /// </summary>
-    public class PlayerTalent
+    public class TalentEffect
     {
+        public int ID { get; set; }
         public string Name { get; set; }
-
         public string Description { get; set; }
 
-        public List<TalentEffect> Effects { get; set; }
+        public int Type { get; set; }
 
+        public int DefaultValue { get; set; }
     }
 }

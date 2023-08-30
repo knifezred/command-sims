@@ -1,4 +1,5 @@
 ﻿using CommandSims.Entity.Archive;
+using CommandSims.Entity.Npc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace CommandSims.Data
     /// </summary>
     public class CurrentActivityData
     {
-        public ArchiveData ArchiveData { get; set; }
+        public static ArchiveData ArchiveData { get; set; }
+
 
     }
 }

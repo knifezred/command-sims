@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommandSims.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,7 +20,9 @@ namespace CommandSims.Entity.Npc
         /// </summary>
         public string Name { get; set; }
         public int Age { get; set; }
-        public int Gender { get; set; }
+        public GenderEnum Gender { get; set; }
+
+        public RaceEnum Race { get; set; }
 
     }
 }

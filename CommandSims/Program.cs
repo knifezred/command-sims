@@ -1,21 +1,72 @@
 ﻿using CommandSims.Constants;
 using CommandSims.Core;
 using CommandSims.Data;
-using CommandSims.Entity.Archive;
-using CommandSims.Stories;
-using CommandSims.Utils;
 using Spectre.Console;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        AnsiConsole.MarkupLine("Welcome to [green]command sims[/]!");
-        UI.PrintLine("请输入存档名称或开启新存档", ConsoleColor.DarkGray);
-        // 加载事件
+        Sims.StartInit();
+        SpectreConsoleDemo();
+        UI.LoadStartPanel();
+        // 监听全局事件
         ReadCommand(Console.ReadLine(), 1);
+    }
+
+    static void SpectreConsoleDemo()
+    {
+        if (!AnsiConsole.Confirm("Run prompt example?"))
+        {
+            AnsiConsole.MarkupLine("Ok... :(");
+            return;
+        }
+        var layout = new Layout("Root")
+            .SplitColumns(
+            new Layout("Left"),
+            new Layout("Right").SplitRows(
+                new Layout("Top"),
+                new Layout("Bottom")));
+
+        // Update the left column
+        layout["Left"].Update(
+            new Panel(
+                Align.Center(
+                    new Markup("Hello [blue]World![/]"),
+                    VerticalAlignment.Middle))
+                .Expand());
+
+        layout["Top"].Update(new Panel(new BarChart()
+            .Label("[green bold underline]Number of fruits[/]")
+            .CenterLabel()
+            .WithMaxValue(100)
+            .AddItem("Apple", 12, Color.Yellow)
+            .AddItem("Orange", 54, Color.Green)
+            .AddItem("Banana", 33, Color.Red)).Expand());
+        layout["Bottom"].Update(new Panel(
+            new Calendar(2020, 10).HeaderStyle(Style.Parse("blue"))
+            ).Expand());
+        // Render the layout
+        AnsiConsole.Write(layout);
+
+        AnsiConsole.Write(new BreakdownChart()
+            .FullSize()
+            .AddItem("SCSS", 80, Color.Red)
+            .AddItem("HTML", 28.3, Color.Blue)
+            .AddItem("C#", 22.6, Color.Green)
+            .AddItem("JavaScript", 6, Color.Yellow)
+            .AddItem("Ruby", 6, Color.LightGreen)
+            .AddItem("Shell", 0.1, Color.Aqua));
+
+        AnsiConsole.Write(new Rule("[red]Hello[/]"));
+
+
+        var name = AnsiConsole.Ask<string>("What's your [green]name[/]?");
+        var gender = UI.ChooseGender();
+        var race = UI.ChooseRace();
+        Sims.PlayerData.PlayerInfo.Name = name;
+        Sims.PlayerData.PlayerInfo.Gender = gender;
+        Sims.PlayerData.PlayerInfo.Race = race;
     }
 
 
@@ -31,14 +82,16 @@ internal class Program
                     break;
                 case "load":
                 case "读档":
-                    LoadProfileArchive(commands.Skip(1).ToList());
+                    Sims.GameFramework.LoadArchive(commands[1]);
                     break;
                 case "save":
                 case "存档":
-
+                    Sims.GameFramework.SaveArchive(commands[1]);
                     break;
                 case "exit":
                 case "退出":
+                    UI.PrintLine("自动保存中...");
+                    Sims.GameFramework.SaveArchive("AutoSaved");
                     UI.Print("shutdown this program...");
                     eventId = 0;
                     break;
@@ -91,57 +144,4 @@ internal class Program
         UI.PrintLine("操作：destroy/毁", ConsoleColor.Green);
         UI.PrintLine("示例 摧毁物品：destroy 桃木剑 1", ConsoleColor.DarkGray);
     }
-
-    static void LoadProfileArchive(List<string> commands)
-    {
-        using var db = new SimsContext();
-        foreach (string command in commands)
-        {
-            var archives = FileUtils.List(PathConst.ARCHIVE_PATH);
-            // todo 读取存档文件
-            var archive = archives.AsQueryable().Where(x => x.Name == command).FirstOrDefault();
-            if (archive != null)
-            {
-                var archiveDataText = FileUtils.ReadFile(archive.FullName);
-
-                CurrentActivityData activityData = new CurrentActivityData();
-                var archiveData = JsonSerializer.Deserialize<ArchiveData>(archiveDataText);
-                if (archiveData != null)
-                {
-                    activityData.ArchiveData = archiveData;
-                    UI.PrintLine("存档加载成功");
-                }
-                else
-                {
-                    UI.PrintLine("存档读取失败，请重新开档或读取其他存档");
-                }
-            }
-            else
-            {
-                UI.PrintLine("[" + command + "]不存在，是否创建新存档？");
-                UI.PrintLine("1. 确定 2. 读取其他存档");
-                var choose = Console.ReadKey();
-                if (choose.KeyChar.ToString() == "1")
-                {
-                    Console.WriteLine();
-                    SomeoneBorned someoneBorned = new();
-                    someoneBorned.PlayerBorn();
-                }
-                else if (choose.KeyChar.ToString() == "2")
-                {
-                    UI.PrintLine("请输入存档名称");
-                    var archiveName = Console.ReadLine();
-                    if (archiveName != null)
-                    {
-                        LoadProfileArchive(new List<string> { archiveName });
-                    }
-                }
-                else
-                {
-                    UI.PrintLine("无法识别的输入选项，将退回");
-                }
-            }
-        }
-    }
-
 }
