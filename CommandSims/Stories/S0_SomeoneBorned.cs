@@ -22,10 +22,17 @@ namespace CommandSims.Stories
             var name = AnsiConsole.Ask<string>("What's your [green]name[/]?");
             var gender = UI.ChooseGender();
             var race = UI.ChooseRace();
-            Sims.PlayerData.PlayerInfo.Name = name;
-            Sims.PlayerData.PlayerInfo.Gender = gender;
-            Sims.PlayerData.PlayerInfo.Race = race;
-
+            Sims.PlayerData.PlayerInfo = new Entity.Npc.Player
+            {
+                Id = 0,
+                Exp = 0,
+                MaxHP = 100,
+                MaxMP = 100,
+                Speed = 10,
+                Name = name,
+                Gender = gender,
+                Race = race
+            };
             WorldFramework.WorldTime.AddYears(1);
             Sims.PlayerData.PlayerInfo.Age = 1;
             var babySeize = AnsiConsole.Prompt(new SelectionPrompt<string>()

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommandSims.Entity
 {
-    public class TalentEffect
+    public class TalentEffect : RandomBase
     {
         public int ID { get; set; }
         public string Name { get; set; }

@@ -6,12 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommandSims.Data
 {
-    public class RaceData
+    internal class BookData
     {
-        public static List<string> Races = new List<string>();
-        RaceData()
-        {
-            Races.Add("");
-        }
     }
 }

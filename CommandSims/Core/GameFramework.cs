@@ -125,7 +125,7 @@ namespace CommandSims.Core
                     case "exit":
                     case "退出":
                         Sims.Game.SaveArchive("AutoSaved");
-                        eventId = 0;
+                        UI.LoadStartPanel();
                         break;
                     case "command":
                     case "cmd":

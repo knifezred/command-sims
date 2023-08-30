@@ -12,9 +12,9 @@ namespace CommandSims.Service
 
         public TimeService(ILogger<TimeService> logger, IHostApplicationLifetime applicationLifetime)
         {
-            _logger = logger;
             applicationLifetime.ApplicationStarted.Register(OnStarted);
             applicationLifetime.ApplicationStopped.Register(OnStopped);
+            _logger = logger;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
@@ -50,9 +50,11 @@ namespace CommandSims.Service
 
         private void TimeWork(object? state)
         {
+
             if (!UI.IsBusy())
             {
                 UI.PrintLine("random case");
+
             }
         }
     }

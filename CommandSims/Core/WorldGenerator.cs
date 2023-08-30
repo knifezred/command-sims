@@ -1,4 +1,5 @@
-﻿using KnifeZ.Unity.Models;
+﻿using CommandSims.Data;
+using KnifeZ.Unity.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -126,5 +127,21 @@ namespace CommandSims.Core
 
         #endregion
 
+        #region 地图
+
+
+
+        #endregion
+
+        #region NPC
+
+        public void AddNpc()
+        {
+            // 获取最大ID
+            var maxId = NpcData.Players.OrderByDescending(x => x.Id).First().Id;
+            maxId++;
+            UI.PrintLine("有新人出生了");
+        }
+        #endregion
     }
 }
