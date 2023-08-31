@@ -11,17 +11,15 @@ namespace CommandSims.Modules.Archive
     /// <summary>
     /// 存档数据
     /// </summary>
-    public class ArchiveData
+    public class ArchiveContext
     {
         public string Name { get; set; }
 
-        public string Description { get; set; }
-
-        public DateTime WorldTime { get; set; }
-
-        public int Money { get; set; }
+        public DateTime SavedTime { get; set; }
 
         public Player PlayerInfo { get; set; }
+
+        public int Money { get; set; }
 
         public List<ArchiveItem> BagItems { get; set; }
 

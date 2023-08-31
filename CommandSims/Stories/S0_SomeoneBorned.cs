@@ -19,7 +19,7 @@ namespace CommandSims.Stories
         {
             Sims.World.CreateNewWorld(0);
             AnsiConsole.Write(new Rule("[red]序章[/]"));
-            var msg = string.Format("{0},{1},你出生了", Sims.WorldTime, Sims.Weather.Value);
+            var msg = string.Format("{0},{1},你出生了", Sims.World.GetWorldTime(), Sims.Weather.Value);
             UI.PrintLine(msg);
             UI.PrintLine("");
             var name = AnsiConsole.Prompt(new SelectionPrompt<string>()

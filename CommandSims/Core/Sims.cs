@@ -8,7 +8,7 @@ namespace CommandSims.Core
 {
     public class Sims
     {
-        public static ArchiveData Context { get; set; }
+        public static ArchiveContext Context { get; set; }
 
         public static GameFramework Game { get; set; }
 
@@ -22,13 +22,26 @@ namespace CommandSims.Core
         {
             Game = new GameFramework();
             World = new WorldFrame();
-            Context = new ArchiveData
+            Context = new ArchiveContext
             {
                 PlayerInfo = new Player(),
                 BagItems = new List<ArchiveItem>(),
                 StorageItems = new List<ArchiveItem>(),
                 WorldData = new ArchiveWorldData()
             };
+        }
+
+        public static void Reload(ArchiveContext archiveContext)
+        {
+            Context = archiveContext;
+            #region 修复老存档空数据问题
+            if (Sims.Context.WorldData == null)
+            {
+                Sims.Context.WorldData = new ArchiveWorldData();
+            }
+            #endregion
+            World = new WorldFrame();
+            Game = new GameFramework();
         }
 
         public static Player? GetPlayer(int playerId)

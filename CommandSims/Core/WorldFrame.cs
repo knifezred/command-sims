@@ -40,6 +40,7 @@ namespace CommandSims.Core
         {
             random = new();
             Map = new WorldMap();
+            SetWorldStartTime(Sims.Context.WorldData.WorldTime);
         }
 
         /// <summary>

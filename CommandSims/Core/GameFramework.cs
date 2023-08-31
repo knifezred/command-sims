@@ -29,6 +29,8 @@ namespace CommandSims.Core
                 saveName = "AutoSaved";
             }
             var archivePath = Path.Join(PathConst.ARCHIVE_PATH, saveName);
+            Sims.Context.Name = saveName;
+            Sims.Context.SavedTime = DateTime.Now;
             var data = JsonSerializer.Serialize(Sims.Context);
             FileUtils.WriteFile(data, archivePath);
             UI.PrintLine("存档保存成功");
@@ -55,18 +57,11 @@ namespace CommandSims.Core
             if (archive != null)
             {
                 var archiveDataText = FileUtils.ReadFile(archive.FullName);
-                var archiveData = JsonSerializer.Deserialize<ArchiveData>(archiveDataText);
+                var archiveData = JsonSerializer.Deserialize<ArchiveContext>(archiveDataText);
                 if (archiveData != null)
                 {
                     UI.PrintLine("存档加载成功");
-                    Sims.Context = archiveData;
-                    #region 修复老存档空数据问题
-                    if (Sims.Context.WorldData == null)
-                    {
-                        Sims.Context.WorldData = new ArchiveWorldData();
-                    }
-                    #endregion
-                    Sims.World.SetWorldStartTime(archiveData.WorldTime);
+                    Sims.Reload(archiveData);
                     Sims.World.GoRandomWeather();
                     UI.ShowPlayerInfo(0);
                 }
