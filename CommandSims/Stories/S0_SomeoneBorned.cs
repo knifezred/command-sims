@@ -1,10 +1,12 @@
 ﻿using CommandSims.Core;
+using CommandSims.Data;
 using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace CommandSims.Stories
 {
@@ -19,7 +21,19 @@ namespace CommandSims.Stories
             AnsiConsole.Write(new Rule("[red]序章[/]"));
             var msg = string.Format("{0},{1},你出生了", WorldFramework.WorldTime, WorldFramework.Weather);
             UI.PrintLine(msg);
-            var name = AnsiConsole.Ask<string>("What's your [green]name[/]?");
+            UI.PrintLine("");
+            var name = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                   .Title("名字")
+                   .PageSize(10)
+                   .AddChoices(new string[] { "1. 随机", "2. 自定义" }));
+            if (name.StartsWith("1."))
+            {
+                name = ReRandomName();
+            }
+            else
+            {
+                name = AnsiConsole.Ask<string>("请输入名字:");
+            }
             var gender = UI.ChooseGender();
             var race = UI.ChooseRace();
             Sims.PlayerData.PlayerInfo = new Entity.Npc.Player
@@ -39,7 +53,7 @@ namespace CommandSims.Stories
                    .Title($"{WorldFramework.WorldTime:yyyy年MM月dd},抓周")
                    .PageSize(10)
                    .AddChoices(new string[] { "1. 一把小刀", "2. 算盘", "3. 道书", "4. 佛经", "5. 剪刀" }));
-            AnsiConsole.MarkupLine($"1岁抓周时，你选择了{babySeize}");
+            AnsiConsole.MarkupLine($"1岁抓周时，你选择了[green]{babySeize.Split('.')[1]}[/]");
             // todo 添加用户属性
 
             // 1
@@ -48,7 +62,23 @@ namespace CommandSims.Stories
             // 10
             // 14
             // 16
+            UI.ShowPlayerInfo();
 
+        }
+
+        public string ReRandomName()
+        {
+            var name = new DataSeeds().GetRandomFullName();
+            UI.PrintLine(name);
+            var reName = AnsiConsole.Prompt(new SelectionPrompt<string>()
+               .Title("继续随机")
+               .PageSize(10)
+               .AddChoices(new string[] { "1. 随机", "2. 使用当前名字" }));
+            if (reName.StartsWith("1."))
+            {
+                name = ReRandomName();
+            }
+            return name;
         }
 
     }

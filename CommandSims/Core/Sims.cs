@@ -26,5 +26,17 @@ namespace CommandSims.Core
                 StorageItems = new List<ArchiveItem>()
             };
         }
+
+        public static Player? GetPlayer(int playerId)
+        {
+            var player = Sims.PlayerData.PlayerInfo;
+            if (playerId > 0)
+            {
+                //npc
+                player = Sims.NpcList.FirstOrDefault(x => x.Id == playerId);
+            }
+            return player;
+        }
+
     }
 }

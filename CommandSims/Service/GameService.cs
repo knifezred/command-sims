@@ -50,6 +50,7 @@ namespace CommandSims.Service
         {
             return Task.Run(() =>
             {
+                // 等待主机启动后再进入主页
                 _timer = new Timer(TimeWork, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(5));
             }, stoppingToken);
         }
@@ -58,7 +59,6 @@ namespace CommandSims.Service
         {
             // 释放timmer
             _timer.Dispose();
-            // 加载Login页面
             UI.LoadStartPanel();
             // 释放UI
             UI.SetFree();

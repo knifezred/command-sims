@@ -62,7 +62,7 @@ namespace CommandSims.Core
                     Sims.PlayerData = archiveData;
                     WorldFramework.WorldTime = archiveData.WorldTime;
                     Sims.World.GoRandomWeather();
-                    UI.ShowPalyerInfo();
+                    UI.ShowPlayerInfo(0);
                 }
                 else
                 {

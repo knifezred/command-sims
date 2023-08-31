@@ -15,6 +15,16 @@ namespace CommandSims.Utils
             random = new Random(seed);
         }
 
+        public static int Next(int min = 0, int max = 10)
+        {
+            return random.Next(min, max);
+        }
+
+        public static int Next(int max)
+        {
+            return random.Next(0, max);
+        }
+
         public static int GetNextWithWeight(List<int> weights)
         {
             int totalWeight = 0;
