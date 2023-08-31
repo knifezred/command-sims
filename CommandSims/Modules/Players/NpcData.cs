@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommandSims.Data
+namespace CommandSims.Modules.Npc
 {
     public class NpcData
     {
@@ -25,7 +25,7 @@ namespace CommandSims.Data
             Sims.World.AddNpc();
             Players.Add(new Player()
             {
-                
+
             });
 
         }

@@ -1,5 +1,5 @@
 ﻿using CommandSims.Core;
-using CommandSims.Data;
+using CommandSims.Modules.Seeds;
 using Spectre.Console;
 using System;
 using System.Collections.Generic;
@@ -68,7 +68,7 @@ namespace CommandSims.Stories
 
         public string ReRandomName()
         {
-            var name = new DataSeeds().GetRandomFullName();
+            var name = new SeedsData().GetRandomFullName();
             UI.PrintLine(name);
             var reName = AnsiConsole.Prompt(new SelectionPrompt<string>()
                .Title("继续随机")

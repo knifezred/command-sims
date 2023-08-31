@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace KnifeZ.Unity.Models
+namespace CommandSims.Entity.Base
 {
 
     /// <summary>

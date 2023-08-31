@@ -12,7 +12,10 @@ namespace CommandSims.Constants
         /// 存档路径
         /// </summary>
         public static string ARCHIVE_PATH = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "CommandSims", "Saves");
-
+        /// <summary>
+        /// 字典路径
+        /// </summary>
+        public static string DIST_PATH = Path.Join(Environment.CurrentDirectory, "Dists");
 
     }
 }

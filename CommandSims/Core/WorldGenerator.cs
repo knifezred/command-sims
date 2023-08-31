@@ -1,5 +1,5 @@
-﻿using CommandSims.Data;
-using KnifeZ.Unity.Models;
+﻿using CommandSims.Entity.Base;
+using CommandSims.Modules.Npc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -129,6 +129,10 @@ namespace CommandSims.Core
 
         #region 地图
 
+        public void AddMap()
+        {
+
+        }
 
 
         #endregion

@@ -1,6 +1,7 @@
 ﻿using CommandSims.Core;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Spectre.Console;
 
 namespace CommandSims.Service
 {
@@ -50,10 +51,10 @@ namespace CommandSims.Service
 
         private void TimeWork(object? state)
         {
-
             if (!UI.IsBusy())
             {
-                UI.PrintLine("random case");
+                // 数据流转，不做任何UI操作，需玩家自信触发下一步操作，防止与ReadCommand冲突
+                AnsiConsole.MarkupLine("[gray]有什么事情发生了... [blue]look[/]查看详情[/]");
 
             }
         }

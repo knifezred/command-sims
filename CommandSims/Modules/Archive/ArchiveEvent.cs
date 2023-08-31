@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommandSims.Data
+namespace CommandSims.Modules.Archive
 {
-    internal class BookData
+    public class ArchiveEvent
     {
+
     }
 }

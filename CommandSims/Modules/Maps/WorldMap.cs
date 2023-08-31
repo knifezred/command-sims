@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommandSims.Data
+namespace CommandSims.Modules.Maps
 {
-    internal class SchoolData
+    internal class WorldMap
     {
+
     }
 }

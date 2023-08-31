@@ -1,4 +1,5 @@
-﻿using CommandSims.Entity;
+﻿using CommandSims.Constants;
+using CommandSims.Entity;
 using CommandSims.Utils;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
@@ -8,14 +9,14 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace CommandSims.Data
+namespace CommandSims.Modules.Seeds
 {
-    public class DataSeeds
+    public class SeedsData
     {
         public List<SeedEntity> SurnameSeeds { get; set; }
         public List<SeedEntity> NameSeeds { get; set; }
 
-        public DataSeeds()
+        public SeedsData()
         {
             #region SurnameData
             var surnames = @"赵 100
@@ -520,7 +521,7 @@ namespace CommandSims.Data
             var dists = books.Split("|");
             foreach (var dist in dists)
             {
-                var book = FileUtils.ReadFile(Path.Join(Environment.CurrentDirectory, "Dists", dist));
+                var book = FileUtils.ReadFile(Path.Join(PathConst.DIST_PATH, dist));
                 var nameDicts = JsonSerializer.Deserialize<List<DistEntity>>(book);
                 foreach (var dict in nameDicts)
                 {
@@ -584,7 +585,7 @@ namespace CommandSims.Data
 
         public string GetLastName()
         {
-            var sentense = GetnNameSentense();
+            var sentense = GetNameSentense();
             var result = "";
             var charCount = RandomUtils.Next(1, 3);
             if (sentense.Length < charCount)
@@ -599,14 +600,14 @@ namespace CommandSims.Data
             return result;
         }
 
-        private string GetnNameSentense()
+        private string GetNameSentense()
         {
             var weights = NameSeeds.Select(x => x.Weight).ToList();
             var sentense = NameSeeds[RandomUtils.GetNextWithWeight(weights)].Text;
-            sentense = sentense.Replace("，", "").Replace(",", "").Replace("(", "").Replace(")", "").Replace("“", "").Replace("”", "");
+            sentense = sentense.Replace(" ", "").Replace("，", "").Replace(",", "").Replace("(", "").Replace(")", "").Replace("“", "").Replace("”", "");
             if (sentense.Length == 0)
             {
-                sentense = GetnNameSentense();
+                sentense = GetNameSentense();
             }
             return sentense;
         }

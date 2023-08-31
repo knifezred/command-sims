@@ -1,5 +1,4 @@
-﻿using CommandSims.Data;
-using CommandSims.Enums;
+﻿using CommandSims.Enums;
 using CommandSims.Stories;
 using CommandSims.Utils;
 using KnifeZ.Unity.Extensions;
@@ -54,7 +53,8 @@ namespace CommandSims.Core
             }
             if (result == "新的开始")
             {
-                new S0_SomeoneBorned().PlayerBorn();
+                //new S0_SomeoneBorned().PlayerBorn();
+                new S1_BlackHouse().WakeUp();
             }
         }
 

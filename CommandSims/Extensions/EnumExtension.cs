@@ -1,5 +1,5 @@
-﻿using CommandSims.Utils;
-using KnifeZ.Unity.Models;
+﻿using CommandSims.Entity.Base;
+using CommandSims.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;

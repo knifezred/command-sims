@@ -1,7 +1,6 @@
 ﻿using CommandSims.Constants;
-using CommandSims.Data;
-using CommandSims.Entity.Archive;
 using CommandSims.Enums;
+using CommandSims.Modules.Archive;
 using CommandSims.Stories;
 using CommandSims.Utils;
 using KnifeZ.Unity.Extensions;
@@ -134,6 +133,7 @@ namespace CommandSims.Core
                         break;
                     case "look":
                     case "观察":
+                        UI.ShowPlayerInfo();
                         break;
                     case "open":
                     case "o":
@@ -145,7 +145,7 @@ namespace CommandSims.Core
                     case "学":
                         break;
                     default:
-                        UI.PrintLine("无效指令，请重新输入", ConsoleColor.DarkGray);
+                        UI.PrintLine("无效指令，请重新输入,help查看可用指令", ConsoleColor.DarkGray);
                         break;
                 }
 

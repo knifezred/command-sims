@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommandSims.Entity.Archive
+namespace CommandSims.Modules.Maps
 {
-    public class ArchiveEvent
+    internal class MapData
     {
-
     }
 }

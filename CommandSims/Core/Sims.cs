@@ -1,5 +1,5 @@
-﻿using CommandSims.Entity.Archive;
-using CommandSims.Entity.Npc;
+﻿using CommandSims.Entity.Npc;
+using CommandSims.Modules.Archive;
 using CommandSims.Service;
 
 namespace CommandSims.Core
