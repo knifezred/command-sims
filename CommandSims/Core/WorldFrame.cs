@@ -1,5 +1,8 @@
 ﻿using CommandSims.Entity.Base;
+using CommandSims.Enums;
+using CommandSims.Modules.Maps;
 using CommandSims.Modules.Npc;
+using CommandSims.Modules.Players;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +11,35 @@ using System.Threading.Tasks;
 
 namespace CommandSims.Core
 {
-    public class WorldFramework
+    public class WorldFrame
     {
         private Random random;
+        /// <summary>
+        /// 地图
+        /// </summary>
+        public WorldMap Map { get; set; }
 
-        public WorldFramework()
+        /// <summary>
+        /// 所有NPC
+        /// </summary>
+        public List<ActiveNpc> NpcList
+        {
+            get
+            {
+                return Sims.Context.WorldData.ActiveNpcs;
+            }
+            set
+            {
+                Sims.Context.WorldData.ActiveNpcs = value;
+            }
+        }
+
+        public List<ItemBase> ItemList { get; set; }
+
+        public WorldFrame()
         {
             random = new();
+            Map = new WorldMap();
         }
 
         /// <summary>
@@ -32,7 +57,7 @@ namespace CommandSims.Core
                 random = new();
             }
             // 设置初始时间
-            SetWorldStartTime();
+            SetWorldStartTime(null);
             // 设置默认天气
             GoRandomWeather();
         }
@@ -42,6 +67,7 @@ namespace CommandSims.Core
         /// </summary>
         public void InitWorldData()
         {
+            // 添加NPC
 
         }
 
@@ -50,7 +76,7 @@ namespace CommandSims.Core
         /// <summary>
         /// 当前天气
         /// </summary>
-        public static string Weather = "晴";
+        private static string Weather = "晴";
 
         //"阴","大雾","雷阵雨","小雨","中雨","大雨","暴雨","小雪","中雪","大雪","暴雪",
         public List<SimpleListItem> WeatherList = new()
@@ -72,6 +98,11 @@ namespace CommandSims.Core
             },
         };
 
+        public SimpleListItem GetWorldWeather()
+        {
+            return WeatherList.First(x => x.Text == Weather);
+        }
+
         public void ChangeWeather(string weather)
         {
             // 天气是否存在
@@ -83,13 +114,10 @@ namespace CommandSims.Core
 
         public void GoRandomWeather()
         {
-            Random random = new();
             var randIndex = random.Next(0, WeatherList.Count);
             var nextWeather = WeatherList[randIndex];
-            Weather = nextWeather.Value.ToString();
-            UI.PrintLine(nextWeather.Text.ToString());
-
-
+            Weather = nextWeather.Value;
+            UI.PrintLine(nextWeather.Text);
         }
 
         #endregion
@@ -98,7 +126,16 @@ namespace CommandSims.Core
         /// <summary>
         /// 系统时间
         /// </summary>
-        public static DateTime WorldTime = DateTime.MinValue;
+        private static DateTime WorldTime = DateTime.MinValue;
+
+        public DateTime GetWorldTime() { return WorldTime; }
+
+        public void UpdateWorldTime(int day = 0, int hour = 0, int min = 0)
+        {
+            WorldTime = WorldTime.AddDays(day);
+            WorldTime = WorldTime.AddHours(hour);
+            WorldTime = WorldTime.AddMinutes(min);
+        }
 
         /// <summary>
         /// 生成NPC出生时间
@@ -115,27 +152,25 @@ namespace CommandSims.Core
         /// <summary>
         /// 设置初始时间(玩家出生时间)
         /// </summary>
-        public void SetWorldStartTime()
+        public void SetWorldStartTime(DateTime? startTime)
         {
-            WorldTime = DateTime.MinValue;
-            WorldTime = WorldTime.AddYears(random.Next(1000, 1100));
-            WorldTime = WorldTime.AddDays(random.Next(0, 365));
-            WorldTime = WorldTime.AddHours(random.Next(0, 23));
-            WorldTime = WorldTime.AddMinutes(random.Next(0, 60));
-            WorldTime = WorldTime.AddSeconds(random.Next(0, 60));
+            if (startTime != null)
+            {
+                WorldTime = startTime.Value;
+            }
+            else
+            {
+                WorldTime = DateTime.MinValue;
+                WorldTime = WorldTime.AddYears(random.Next(1000, 1100));
+                WorldTime = WorldTime.AddDays(random.Next(0, 365));
+                WorldTime = WorldTime.AddHours(random.Next(0, 23));
+                WorldTime = WorldTime.AddMinutes(random.Next(0, 60));
+                WorldTime = WorldTime.AddSeconds(random.Next(0, 60));
+            }
         }
 
         #endregion
 
-        #region 地图
-
-        public void AddMap()
-        {
-
-        }
-
-
-        #endregion
 
         #region NPC
 

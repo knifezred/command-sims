@@ -1,6 +1,7 @@
 ﻿using CommandSims.Constants;
 using CommandSims.Enums;
 using CommandSims.Modules.Archive;
+using CommandSims.Modules.Maps;
 using CommandSims.Stories;
 using CommandSims.Utils;
 using KnifeZ.Unity.Extensions;
@@ -28,7 +29,7 @@ namespace CommandSims.Core
                 saveName = "AutoSaved";
             }
             var archivePath = Path.Join(PathConst.ARCHIVE_PATH, saveName);
-            var data = JsonSerializer.Serialize(Sims.PlayerData);
+            var data = JsonSerializer.Serialize(Sims.Context);
             FileUtils.WriteFile(data, archivePath);
             UI.PrintLine("存档保存成功");
         }
@@ -58,8 +59,14 @@ namespace CommandSims.Core
                 if (archiveData != null)
                 {
                     UI.PrintLine("存档加载成功");
-                    Sims.PlayerData = archiveData;
-                    WorldFramework.WorldTime = archiveData.WorldTime;
+                    Sims.Context = archiveData;
+                    #region 修复老存档空数据问题
+                    if (Sims.Context.WorldData == null)
+                    {
+                        Sims.Context.WorldData = new ArchiveWorldData();
+                    }
+                    #endregion
+                    Sims.World.SetWorldStartTime(archiveData.WorldTime);
                     Sims.World.GoRandomWeather();
                     UI.ShowPlayerInfo(0);
                 }
@@ -133,7 +140,12 @@ namespace CommandSims.Core
                         break;
                     case "look":
                     case "观察":
-                        UI.ShowPlayerInfo();
+                        UI.ShowMapInfo(0);
+                        break;
+                    case "move":
+                    case "map":
+                    case "地图":
+                        UI.ShowMap(0);
                         break;
                     case "open":
                     case "o":
@@ -159,11 +171,12 @@ namespace CommandSims.Core
 
         /// <summary>
         /// 玩家操作命令
+        /// TODO
         /// </summary>
         public void PlayerCommandAction()
         {
             var enums = EnumExtension.ToListItems(typeof(PlayerActionEnum));
-            var actions = enums.Select(x => x.Text.ToString().ToString()).ToArray();
+            var actions = enums.Select(x => x.Text).ToArray();
             var result = AnsiConsole.Prompt(new SelectionPrompt<string>()
                 .Title("[green]你可进行如下操作[/]")
                 .PageSize(10)
@@ -194,11 +207,11 @@ namespace CommandSims.Core
         public bool PreCommandActionCheck(PlayerActionEnum action, int playerId)
         {
             bool result = false;
-            var player = Sims.PlayerData.PlayerInfo;
+            var player = Sims.Context.PlayerInfo;
             if (playerId > 0)
             {
                 //npc
-                player = Sims.NpcList.FirstOrDefault(x => x.Id == playerId);
+                player = Sims.World.NpcList.FirstOrDefault(x => x.Id == playerId);
             }
             if (action == PlayerActionEnum.Attack)
             {
@@ -207,7 +220,10 @@ namespace CommandSims.Core
             result = true;
             return result;
         }
-
+        /// <summary>
+        /// todo
+        /// </summary>
+        /// <param name="playerId"></param>
         public void CommandAttack(int playerId)
         {
             var canDo = PreCommandActionCheck(PlayerActionEnum.Attack, 0);
@@ -226,5 +242,69 @@ namespace CommandSims.Core
         #endregion
 
 
+        #region 地图
+
+        /// <summary>
+        /// 地图移动，一次向周围8个方位移动一格
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        public bool MapMove(MoveDirection direction)
+        {
+            if (direction == MoveDirection.Center)
+            {
+                return false;
+            }
+            MapEntity nextMap = new();
+            var maps = Sims.World.Map.GetArroundMaps(Sims.Context.CurrentMap.Id);
+            var currentMap = Sims.Context.CurrentMap;
+            var directionSrt = Enum.GetName(typeof(MoveDirection), direction);
+            switch (direction)
+            {
+                case MoveDirection.Right:
+                    nextMap = maps.FirstOrDefault(x => x.LocationX == (currentMap.LocationX + 1) && x.LocationY == currentMap.LocationY);
+                    break;
+                case MoveDirection.Down:
+                    nextMap = maps.FirstOrDefault(x => x.LocationX == currentMap.LocationX && x.LocationY == (currentMap.LocationY - 1));
+                    break;
+                case MoveDirection.Left:
+                    nextMap = maps.FirstOrDefault(x => x.LocationX == (currentMap.LocationX - 1) && x.LocationY == currentMap.LocationY);
+                    break;
+                case MoveDirection.Up:
+                    nextMap = maps.FirstOrDefault(x => x.LocationX == currentMap.LocationX && x.LocationY == (currentMap.LocationY + 1));
+                    break;
+                case MoveDirection.RightUp:
+                    nextMap = maps.FirstOrDefault(x => x.LocationX == (currentMap.LocationX + 1) && x.LocationY == (currentMap.LocationY + 1));
+                    break;
+                case MoveDirection.RightDown:
+                    nextMap = maps.FirstOrDefault(x => x.LocationX == (currentMap.LocationX + 1) && x.LocationY == (currentMap.LocationY - 1));
+                    break;
+                case MoveDirection.LeftUp:
+                    nextMap = maps.FirstOrDefault(x => x.LocationX == (currentMap.LocationX - 1) && x.LocationY == (currentMap.LocationY + 1));
+                    break;
+                case MoveDirection.LeftDown:
+                    nextMap = maps.FirstOrDefault(x => x.LocationX == (currentMap.LocationX - 1) && x.LocationY == (currentMap.LocationY - 1));
+                    break;
+                case MoveDirection.Center:
+                    nextMap = currentMap;
+                    break;
+                case MoveDirection.Enter:
+                    nextMap = Sims.World.Map.GoMapEnterRoom(currentMap.Id);
+                    break;
+                case MoveDirection.Exit:
+                    nextMap = Sims.World.Map.GetMapById(currentMap.ParentId);
+                    break;
+                default:
+                    nextMap = currentMap;
+                    break;
+            }
+            if (nextMap != null)
+            {
+                Sims.Context.CurrentMap = nextMap;
+            }
+            return true;
+        }
+
+        #endregion
     }
 }

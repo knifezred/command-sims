@@ -55,7 +55,7 @@ namespace KnifeZ.Unity.Extensions
                             var vs = v.Split(',');
                             foreach (var item in vs)
                             {
-                                if (item != null && (newitem.Value.ToString() == item.ToString()) || name == item.ToString())
+                                if (item != null && (newitem.Value == item.ToString()) || name == item.ToString())
                                 {
                                     newitem.Selected = true;
                                     break;

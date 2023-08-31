@@ -1,4 +1,5 @@
 ﻿using CommandSims.Enums;
+using CommandSims.Modules.Maps;
 using CommandSims.Stories;
 using CommandSims.Utils;
 using KnifeZ.Unity.Extensions;
@@ -31,6 +32,110 @@ namespace CommandSims.Core
         {
             Busy = false;
         }
+        #endregion
+
+        #region 地图
+
+        public static void ShowMap(int mapId)
+        {
+            var maps = Sims.World.Map.GetArroundMaps(mapId).OrderBy(x => x.LocationX).ThenByDescending(x => x.LocationY).ToList();
+            Sims.Context.CurrentMap = maps.First(x => x.Id == mapId);
+            List<MoveDirection> moveDirections = new()
+            {
+                MoveDirection.Center
+            };
+            if (Sims.World.Map.CanEnter(Sims.Context.CurrentMap.Id))
+            {
+                moveDirections.Add(MoveDirection.Enter);
+            }
+            if (Sims.Context.CurrentMap.CanOut)
+            {
+                moveDirections.Add(MoveDirection.Exit);
+            }
+            var table = new Table();
+            var tempX = Sims.Context.CurrentMap.LocationX;
+            var tempY = Sims.Context.CurrentMap.LocationY;
+            string[] rows1 = new string[3] { "", "", "" };
+            string[] rows2 = new string[3] { "", "", "" };
+            string[] rows3 = new string[3] { "", "", "" };
+            table.AddColumn("西");
+            table.AddColumn("");
+            table.AddColumn("东");
+            foreach (var map in maps)
+            {
+                if (map.LocationX < tempX && map.LocationY == tempY)
+                {
+                    moveDirections.Add(MoveDirection.Left);
+                    rows2[0] = map.Name;
+                }
+                if (map.LocationX == tempX && map.LocationY == tempY)
+                {
+                    rows2[1] = map.Name;
+                }
+                if (map.LocationX > tempX && map.LocationY == tempY)
+                {
+                    moveDirections.Add(MoveDirection.Right);
+                    rows2[2] = map.Name;
+                }
+
+                if (map.LocationX < tempX && map.LocationY > tempY)
+                {
+                    moveDirections.Add(MoveDirection.LeftUp);
+                    rows1[0] = map.Name;
+                }
+                if (map.LocationX == tempX && map.LocationY > tempY)
+                {
+                    moveDirections.Add(MoveDirection.Up);
+                    rows1[1] = map.Name;
+                }
+                if (map.LocationX > tempX && map.LocationY > tempY)
+                {
+                    moveDirections.Add(MoveDirection.RightUp);
+                    rows1[2] = map.Name;
+                }
+
+                if (map.LocationX < tempX && map.LocationY < tempY)
+                {
+                    moveDirections.Add(MoveDirection.LeftDown);
+                    rows3[0] = map.Name;
+                }
+                if (map.LocationX == tempX && map.LocationY < tempY)
+                {
+                    moveDirections.Add(MoveDirection.Down);
+                    rows3[1] = map.Name;
+                }
+                if (map.LocationX > tempX && map.LocationY < tempY)
+                {
+                    moveDirections.Add(MoveDirection.RightDown);
+                    rows3[2] = map.Name;
+                }
+
+            }
+            table.AddRow(rows1);
+            table.AddRow(rows2);
+            table.AddRow(rows3);
+            table.Centered();
+            AnsiConsole.Write(table);
+            ShowMoveDirection(moveDirections);
+        }
+
+        public static void ShowMoveDirection(List<MoveDirection> moveDirections)
+        {
+            var actions = moveDirections.Select(x => x.GetEnumDisplayName()).ToArray();
+            var result = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                .Title("[green]你可进行如下操作[/]")
+                .PageSize(10)
+                .AddChoices(actions));
+            var direction = EnumExtension.GetValueFromName<MoveDirection>(result);
+            Sims.Game.MapMove(direction);
+            UI.PrintLine(Sims.Context.CurrentMap.Description);
+            if (direction != MoveDirection.Center)
+            {
+                // 除非选择留在此处，否则继续触发移动选项
+                ShowMap(Sims.Context.CurrentMap.Id);
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -74,13 +179,35 @@ namespace CommandSims.Core
 
         }
 
-        public static void ShowMapInfo(int mapId)
+        public static void ShowMapInfo(int mapId = 0)
         {
-
+            var map = Sims.World.Map.GetMapById(mapId);
+            UI.PrintLine(map.Description);
+            ShowRoomNpcs(map.Id);
+        }
+        /// <summary>
+        /// 显示当前地图NPC
+        /// </summary>
+        /// <param name="roomId"></param>
+        public static void ShowRoomNpcs(int roomId)
+        {
+            var roomNpcs = Sims.Context.WorldData.ActiveNpcs.Where(x => x.MapId == roomId).ToList();
+            if (roomNpcs.Any())
+            {
+                UI.Print("这里有");
+                for (int i = 0; i < roomNpcs.Count; i++)
+                {
+                    UI.Print(roomNpcs[i].Name, ConsoleColor.Blue);
+                    if (i < roomNpcs.Count - 1)
+                    {
+                        UI.Print("、");
+                    }
+                }
+            }
 
         }
 
-        public static void ShowRoomNpcList(int roomId)
+        public static void ShowRoomItems(int roomId)
         {
 
         }
@@ -152,7 +279,7 @@ namespace CommandSims.Core
             var raceList = EnumExtension.ToListItems(typeof(RaceEnum));
             if (raceList.Any())
             {
-                var items = raceList.Select(x => x.Text.ToString().ToString()).ToArray();
+                var items = raceList.Select(x => x.Text).ToArray();
                 var result = AnsiConsole.Prompt(new SelectionPrompt<string>()
                     .Title("What's your [green]race[/]?")
                     .PageSize(10)
@@ -168,7 +295,7 @@ namespace CommandSims.Core
             var enums = EnumExtension.ToListItems(typeof(GenderEnum));
             if (enums.Any())
             {
-                var items = enums.Select(x => x.Text.ToString().ToString()).ToArray();
+                var items = enums.Select(x => x.Text).ToArray();
                 var result = AnsiConsole.Prompt(new SelectionPrompt<string>()
                     .Title("What's your [green]gender[/]?")
                     .PageSize(10)

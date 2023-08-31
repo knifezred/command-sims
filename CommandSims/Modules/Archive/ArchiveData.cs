@@ -1,4 +1,5 @@
 ﻿using CommandSims.Entity.Npc;
+using CommandSims.Modules.Maps;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,11 @@ namespace CommandSims.Modules.Archive
 
         public List<ArchiveItem> StorageItems { get; set; }
 
-        public object WorldData { get; set; }
+        /// <summary>
+        /// 所在地图
+        /// </summary>
+        public MapEntity CurrentMap { get; set; }
 
+        public ArchiveWorldData WorldData { get; set; }
     }
 }

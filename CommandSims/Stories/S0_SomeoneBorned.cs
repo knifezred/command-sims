@@ -17,9 +17,9 @@ namespace CommandSims.Stories
     {
         public void PlayerBorn()
         {
-            new WorldFramework().CreateNewWorld(0);
+            Sims.World.CreateNewWorld(0);
             AnsiConsole.Write(new Rule("[red]序章[/]"));
-            var msg = string.Format("{0},{1},你出生了", WorldFramework.WorldTime, WorldFramework.Weather);
+            var msg = string.Format("{0},{1},你出生了", Sims.WorldTime, Sims.Weather.Value);
             UI.PrintLine(msg);
             UI.PrintLine("");
             var name = AnsiConsole.Prompt(new SelectionPrompt<string>()
@@ -36,7 +36,7 @@ namespace CommandSims.Stories
             }
             var gender = UI.ChooseGender();
             var race = UI.ChooseRace();
-            Sims.PlayerData.PlayerInfo = new Entity.Npc.Player
+            Sims.Context.PlayerInfo = new Entity.Npc.Player
             {
                 Id = 0,
                 Exp = 0,
@@ -47,10 +47,10 @@ namespace CommandSims.Stories
                 Gender = gender,
                 Race = race
             };
-            WorldFramework.WorldTime.AddYears(1);
-            Sims.PlayerData.PlayerInfo.Age = 1;
+            Sims.World.UpdateWorldTime(365);
+            Sims.Context.PlayerInfo.Age = 1;
             var babySeize = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                   .Title($"{WorldFramework.WorldTime:yyyy年MM月dd},抓周")
+                   .Title($"{Sims.WorldTime:yyyy年MM月dd},抓周")
                    .PageSize(10)
                    .AddChoices(new string[] { "1. 一把小刀", "2. 算盘", "3. 道书", "4. 佛经", "5. 剪刀" }));
             AnsiConsole.MarkupLine($"1岁抓周时，你选择了[green]{babySeize.Split('.')[1]}[/]");
