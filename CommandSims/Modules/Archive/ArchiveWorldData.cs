@@ -12,7 +12,7 @@ namespace CommandSims.Modules.Archive
     {
         public string Weather { get; set; }
 
-        public DateTime WorldTime => Sims.World.GetWorldTime();
+        public DateTime WorldTime { get; set; }
 
         public List<ActiveNpc> ActiveNpcs { get; set; }
 

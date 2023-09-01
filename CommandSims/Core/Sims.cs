@@ -20,8 +20,6 @@ namespace CommandSims.Core
 
         public static void StartInit()
         {
-            Game = new GameFramework();
-            World = new WorldFrame();
             Context = new ArchiveContext
             {
                 PlayerInfo = new Player(),
@@ -29,6 +27,8 @@ namespace CommandSims.Core
                 StorageItems = new List<ArchiveItem>(),
                 WorldData = new ArchiveWorldData()
             };
+            Game = new GameFramework();
+            World = new WorldFrame();
         }
 
         public static void Reload(ArchiveContext archiveContext)

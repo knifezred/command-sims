@@ -36,10 +36,11 @@ namespace CommandSims.Core
 
         #region 地图
 
-        public static void ShowMap(int mapId)
+        public static void ShowMap(int mapId = 0)
         {
-            var maps = Sims.World.Map.GetArroundMaps(mapId).OrderBy(x => x.LocationX).ThenByDescending(x => x.LocationY).ToList();
-            Sims.Context.CurrentMap = maps.First(x => x.Id == mapId);
+            var crrentMap = Sims.World.Map.GetMapById(mapId);
+            var maps = Sims.World.Map.GetArroundMaps(crrentMap.Id).OrderBy(x => x.LocationX).ThenByDescending(x => x.LocationY).ToList();
+            Sims.Context.CurrentMap = crrentMap;
             List<MoveDirection> moveDirections = new()
             {
                 MoveDirection.Center
@@ -70,7 +71,7 @@ namespace CommandSims.Core
                 }
                 if (map.LocationX == tempX && map.LocationY == tempY)
                 {
-                    rows2[1] = map.Name;
+                    rows2[1] = "[red]" + map.Name + "[/]";
                 }
                 if (map.LocationX > tempX && map.LocationY == tempY)
                 {
@@ -114,7 +115,16 @@ namespace CommandSims.Core
             table.AddRow(rows1);
             table.AddRow(rows2);
             table.AddRow(rows3);
+
+            table.HideHeaders();
+            table.Border(TableBorder.Ascii);
+            table.Alignment(Justify.Center);
             table.Centered();
+            foreach (var column in table.Columns)
+            {
+                column.Centered();
+                column.Width = 18;
+            }
             AnsiConsole.Write(table);
             ShowMoveDirection(moveDirections);
         }
@@ -132,7 +142,7 @@ namespace CommandSims.Core
             if (direction != MoveDirection.Center)
             {
                 // 除非选择留在此处，否则继续触发移动选项
-                ShowMap(Sims.Context.CurrentMap.Id);
+                ShowMap(0);
             }
         }
 

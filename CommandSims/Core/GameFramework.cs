@@ -31,6 +31,7 @@ namespace CommandSims.Core
             var archivePath = Path.Join(PathConst.ARCHIVE_PATH, saveName);
             Sims.Context.Name = saveName;
             Sims.Context.SavedTime = DateTime.Now;
+            Sims.Context.WorldData.WorldTime = Sims.WorldTime;
             var data = JsonSerializer.Serialize(Sims.Context);
             FileUtils.WriteFile(data, archivePath);
             UI.PrintLine("存档保存成功");
