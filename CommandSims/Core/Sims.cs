@@ -8,9 +8,11 @@ namespace CommandSims.Core
 {
     public class Sims
     {
+        public static GameFramework Game { get; set; }
+
         public static ArchiveContext Context { get; set; }
 
-        public static GameFramework Game { get; set; }
+        public static ArchiveWorldData WorldData => Context.WorldData;
 
         public static WorldFrame World { get; set; }
 

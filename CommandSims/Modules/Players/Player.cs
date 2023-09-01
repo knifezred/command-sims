@@ -28,10 +28,6 @@ namespace CommandSims.Entity.Npc
 
         public int Exp { get; set; }
 
-        public int MaxHP { get; set; }
-
-        public int MaxMP { get; set; }
-
         public int Speed { get; set; }
 
         public int Lucky { get; set; }
@@ -40,6 +36,24 @@ namespace CommandSims.Entity.Npc
         public int HP { get; set; }
 
         public int MP { get; set; }
+
+        public int HPMax
+        {
+            get
+            {
+                // 装备
+                // 技能
+                return this.HP + 10;
+            }
+        }
+
+        public int MPMax
+        {
+            get
+            {
+                return this.MP + 10;
+            }
+        }
 
 
 

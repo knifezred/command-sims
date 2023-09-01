@@ -15,7 +15,7 @@ namespace CommandSims.Constants
         /// <summary>
         /// 字典路径
         /// </summary>
-        public static string DIST_PATH = Path.Join(Environment.CurrentDirectory, "Dists");
+        public static string DIST_PATH = Path.Join(Environment.CurrentDirectory, "App_Data", "Dists");
 
     }
 }

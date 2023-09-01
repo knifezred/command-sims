@@ -1,0 +1,12 @@
+[
+  {
+    "Id": 1,
+    "LocationX": 0,
+    "LocationY": 0,
+    "ParentId": 0,
+    "CanExit": false,
+    "Name": "小黑屋",
+    "Description": "一间残破的小木屋",
+    "Type": 1
+  }
+]

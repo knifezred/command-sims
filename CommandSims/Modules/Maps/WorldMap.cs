@@ -1,7 +1,9 @@
 ﻿using CommandSims.Core;
+using CommandSims.Entity;
 using CommandSims.Enums;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,85 +12,115 @@ namespace CommandSims.Modules.Maps
 {
     public class WorldMap
     {
-        private List<MapEntity> MapList;
+        private static List<MapEntity> MapList => Sims.Context.WorldData.Maps;
 
         public WorldMap()
         {
-            MapList = new List<MapEntity>();
             InitMapData();
-
         }
 
         public void InitMapData()
         {
-            MapList.Clear();
-            #region BlackHouse
-            MapList.Add(new MapEntity()
+            // 存档不存在Maps数据时加载默认数据
+            if (!Sims.Context.WorldData.Maps.Any())
             {
-                LocationX = 0,
-                LocationY = 0,
-                Id = 1,
-                ParentId = 0,
-                CanOut = false,
-                Name = "小黑屋",
-                Description = "一间残破的小木屋",
-                Type = MapType.Building
-            });
-            MapList.Add(new MapEntity()
-            {
-                LocationX = 0,
-                LocationY = 0,
-                ParentId = 1,
-                CanOut = true,
-                Name = "客厅1",
-                Description = "这是一间客厅1",
-                Type = MapType.Room,
-                Id = 6,
-            });
-            MapList.Add(new MapEntity()
-            {
-                LocationX = 1,
-                LocationY = 1,
-                ParentId = 1,
-                CanOut = false,
-                Name = "房间1",
-                Description = "这是一间客厅3",
-                Type = MapType.Room,
-                Id = 3,
-            });
-            MapList.AddRange(new List<MapEntity>() {new MapEntity()
-            {
-                LocationX = 0,
-                LocationY = 1,
-                ParentId = 1,
-                CanOut = false,
-                Name = "客厅2",
-                Description = "这是一间客厅2",
-                Type = MapType.Room,
-                Id = 2,
-            }, new MapEntity()
-            {
-                LocationX = 2,
-                LocationY = 1,
-                ParentId = 1,
-                CanOut = false,
-                Name = "房间2",
-                Description = "这是一间客厅4",
-                Type = MapType.Room,
-                Id = 4,
-            }, new MapEntity()
-            {
-                LocationX = 2,
-                LocationY = 0,
-                ParentId = 1,
-                CanOut = false,
-                Name = "房间3",
-                Description = "这是一间客厅5",
-                Type = MapType.Room,
-                Id = 5,
-            }            });
-            #endregion
+                var tree = new TreeNode<MapEntity>(new MapEntity()
+                {
+                    Id = 0,
+                    ParentId = 0,
+                    Name = "ROOT"
+                });
+                tree.AddChild(new MapEntity()
+                {
+                    LocationX = 0,
+                    LocationY = 0,
+                    Name = "小黑屋",
+                    Description = "一座残破的小木屋",
+                    Type = MapType.Building,
+                    ExitMapId = 0,
+                    IsExit = false,
+                    Locked = false,
+                });
+                tree.Children[0].AddChildren(new List<MapEntity>() {
+                new MapEntity()
+                {
+                    Name = "客厅-前",
+                    Description = "一间漆黑的房间",
+                    LocationX = 0,
+                    LocationY = 0,
+                    IsExit = true,
+                    Locked = true,
+                    Type = MapType.Room,
+                },new MapEntity()
+                {
+                    Name = "客厅-中",
+                    Description = "一间漆黑的房间",
+                    LocationX = 0,
+                    LocationY = 1,
+                    IsExit = false,
+                    Locked = false,
+                    Type = MapType.Room,
+                },new MapEntity()
+                {
+                    Name = "客厅-中",
+                    Description = "一间漆黑的房间",
+                    LocationX = 0,
+                    LocationY = 2,
+                    IsExit = false,
+                    Locked = false,
+                    Type = MapType.Room,
+                },new MapEntity()
+                {
+                    Name = "客厅-后",
+                    Description = "一间漆黑的房间",
+                    LocationX = 0,
+                    LocationY = 3,
+                    IsExit = false,
+                    Locked = false,
+                    Type = MapType.Room,
+                }});
+                tree.Children[0].AddChild(new MapEntity()
+                {
+                    Name = "卧室1",
+                    Description = "简陋的卧室，只有一张床",
+                    LocationX = 1,
+                    LocationY = 1,
+                    IsExit = false,
+                    Locked = false,
+                    Type = MapType.Room,
+                });
+                tree.Children[0].AddChild(new MapEntity()
+                {
+                    Name = "卧室2",
+                    Description = "简陋的卧室，只有一张床",
+                    LocationX = 1,
+                    LocationY = 2,
+                    IsExit = false,
+                    Locked = false,
+                    Type = MapType.Room,
+                });
+                tree.Children[0].AddChild(new MapEntity()
+                {
+                    Name = "阳台",
+                    Description = "堆满杂物",
+                    LocationX = -1,
+                    LocationY = 2,
+                    IsExit = false,
+                    Locked = false,
+                    Type = MapType.Room,
+                });
 
+                tree.ResetAutoId();
+                tree.TraverseWithAutoId(tree, AddMapNode);
+            }
+        }
+
+        public void AddMapNode(MapEntity node)
+        {
+            if (node.Id > 0)
+            {
+                Sims.Context.WorldData.Maps.Add(node);
+            }
         }
 
         /// <summary>
@@ -108,7 +140,7 @@ namespace CommandSims.Modules.Maps
             var map = MapList.FirstOrDefault(x => x.Id == id);
             if (map == null)
             {
-                return Sims.World.Map.MapList.First();
+                return MapList.First();
             }
             return map;
         }
@@ -118,9 +150,14 @@ namespace CommandSims.Modules.Maps
         /// </summary>
         /// <param name="mapId"></param>
         /// <returns></returns>
-        public bool CanEnter(int mapId)
+        public bool CanEnter(MapEntity map)
         {
-            return MapList.Any(x => x.ParentId == mapId);
+            return MapList.Any(x => x.ParentId == map.Id && !x.Locked);
+        }
+
+        public bool CanExit(MapEntity map)
+        {
+            return !map.Locked && map.IsExit;
         }
 
         /// <summary>
@@ -130,7 +167,7 @@ namespace CommandSims.Modules.Maps
         /// <returns></returns>
         public MapEntity GoMapEnterRoom(int mapId)
         {
-            var rooms = MapList.Where(x => x.ParentId == mapId && x.CanOut == true).ToList();
+            var rooms = MapList.Where(x => x.ParentId == mapId).ToList();
             if (rooms.Any())
             {
                 return rooms[0];

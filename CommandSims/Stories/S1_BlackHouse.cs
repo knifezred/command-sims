@@ -20,7 +20,7 @@ namespace CommandSims.Stories
         public void WakeUp()
         {
             AnsiConsole.Write(new Rule("[blue]醒来[/]"));
-            UI.ShowMap(0);
+            UI.ShowMap(1);
             UI.PrintLine("");
         }
 

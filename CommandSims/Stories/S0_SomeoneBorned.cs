@@ -40,8 +40,8 @@ namespace CommandSims.Stories
             {
                 Id = 0,
                 Exp = 0,
-                MaxHP = 100,
-                MaxMP = 100,
+                HP = 100,
+                MP = 100,
                 Speed = 10,
                 Name = name,
                 Gender = gender,

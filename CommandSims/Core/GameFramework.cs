@@ -237,6 +237,30 @@ namespace CommandSims.Core
 
         #endregion
 
+        #region 骰子判定
+        public int RollDice(int maxPoint = 26)
+        {
+            var result = RandomUtils.Next(maxPoint);
+            return result + Sims.Context.PlayerInfo.Lucky;
+        }
+
+        public bool RollTheDice(int successPoint, int maxPoint = 26)
+        {
+            var result = RandomUtils.Next(maxPoint);
+            return result > successPoint;
+        }
+
+        /// <summary>
+        /// 检查背包是否存在物品
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <param name="playerId"></param>
+        /// <returns></returns>
+        public bool CheckItemInBag(int itemId, int playerId = 0)
+        {
+            return true;
+        }
+        #endregion
 
         #region 地图
 

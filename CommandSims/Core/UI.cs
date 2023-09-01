@@ -45,11 +45,11 @@ namespace CommandSims.Core
             {
                 MoveDirection.Center
             };
-            if (Sims.World.Map.CanEnter(Sims.Context.CurrentMap.Id))
+            if (Sims.World.Map.CanEnter(crrentMap))
             {
                 moveDirections.Add(MoveDirection.Enter);
             }
-            if (Sims.Context.CurrentMap.CanOut)
+            if (Sims.World.Map.CanExit(crrentMap))
             {
                 moveDirections.Add(MoveDirection.Exit);
             }
@@ -271,11 +271,14 @@ namespace CommandSims.Core
 
         static void Typewriter(string message, int delay = 10)
         {
-            var msgs = message.ToArray();
-            foreach (var msg in msgs)
+            if (message != null)
             {
-                Console.Write($"{msg}");
-                Thread.Sleep(delay);
+                var msgs = message.ToArray();
+                foreach (var msg in msgs)
+                {
+                    Console.Write($"{msg}");
+                    Thread.Sleep(delay);
+                }
             }
 
         }
