@@ -448,7 +448,7 @@ namespace CommandSims.Core
         {
             if (title == "")
             {
-                title = typeof(GenderEnum).GetDescription();
+                title = typeof(TEnum).GetDescription();
             }
             var items = EnumExtension.ToListItems(typeof(TEnum)).ToArray();
             var result = AnsiConsole.Prompt(new SelectionPrompt<ComboSelectListItem>()

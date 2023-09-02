@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandSims.Entity.Base;
 
-namespace CommandSims.Entity
+namespace CommandSims.Modules.Players
 {
     public class TalentEffect : RandomBase
     {

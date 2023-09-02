@@ -51,7 +51,7 @@ namespace CommandSims.Service
             return Task.Run(() =>
             {
                 // 等待主机启动后再进入主页
-                _timer = new Timer(TimeWork, null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(5));
+                _timer = new Timer(TimeWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
             }, stoppingToken);
         }
 

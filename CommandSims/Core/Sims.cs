@@ -2,6 +2,7 @@
 using CommandSims.Entity.Npc;
 using CommandSims.Modules.Archive;
 using CommandSims.Modules.Maps;
+using CommandSims.Modules.Seeds;
 using CommandSims.Service;
 
 namespace CommandSims.Core
@@ -20,8 +21,11 @@ namespace CommandSims.Core
 
         public static SimpleListItem Weather => World.GetWorldWeather();
 
+        public static SeedsData Seeds { get; set; }
+
         public static void StartInit()
         {
+            Seeds = new SeedsData();
             Context = new ArchiveContext
             {
                 Player = new Player(),
@@ -42,8 +46,6 @@ namespace CommandSims.Core
                 Sims.Context.WorldData = new ArchiveWorldData();
             }
             #endregion
-            World = new WorldFrame();
-            Game = new GameFramework();
         }
 
         public static Player? GetPlayer(int playerId)

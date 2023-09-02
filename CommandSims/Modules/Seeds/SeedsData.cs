@@ -1,6 +1,7 @@
 ﻿using CommandSims.Constants;
-using CommandSims.Entity;
 using CommandSims.Utils;
+using KnifeZ.Unity.Extensions;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,38 @@ namespace CommandSims.Modules.Seeds
 {
     public class SeedsData
     {
+        /// <summary>
+        /// 楚辞
+        /// </summary>
+        public List<SeedEntity> ChuciSeeds { get; set; }
+        /// <summary>
+        /// 辞赋
+        /// </summary>
+        public List<SeedEntity> CifuSeeds { get; set; }
+        /// <summary>
+        /// 古诗三百首
+        /// </summary>
+        public List<SeedEntity> GushiSeeds { get; set; }
+        /// <summary>
+        /// 诗经
+        /// </summary>
+        public List<SeedEntity> ShijingSeeds { get; set; }
+        /// <summary>
+        /// 唐诗
+        /// </summary>
+        public List<SeedEntity> TangshiSeeds { get; set; }
+        /// <summary>
+        /// 宋词
+        /// </summary>
+        public List<SeedEntity> SongciSeeds { get; set; }
+        /// <summary>
+        /// 乐府诗集
+        /// </summary>
+        public List<SeedEntity> YuefuSeeds { get; set; }
         public List<SeedEntity> SurnameSeeds { get; set; }
         public List<SeedEntity> NameSeeds { get; set; }
+
+        public List<SeedEntity> SkillNameSeeds { get; set; }
 
         public SeedsData()
         {
@@ -515,53 +546,96 @@ namespace CommandSims.Modules.Seeds
 
             #endregion
 
+            #region DistSeeds
+            YuefuSeeds = InitializeSeed("yuefu.json");
+            TangshiSeeds = InitializeSeed("tangshi.json");
+            SongciSeeds = InitializeSeed("songci.json");
+            ShijingSeeds = InitializeSeed("shijing.json");
+            GushiSeeds = InitializeSeed("gushi.json");
+            CifuSeeds = InitializeSeed("cifu.json");
+            ChuciSeeds = InitializeSeed("chuci.json");
+            #endregion
+
             #region NameData
             NameSeeds = new();
-            var books = "chuci.json|cifu.json|gushi.json|shijing.json|songci.json|tangshi.json|yuefu.json";
-            var dists = books.Split("|");
-            foreach (var dist in dists)
+            NameSeeds.AddRange(CifuSeeds);
+            NameSeeds = CombineSeeds(NameSeeds, YuefuSeeds);
+            NameSeeds = CombineSeeds(NameSeeds, ChuciSeeds);
+            NameSeeds = CombineSeeds(NameSeeds, TangshiSeeds);
+            NameSeeds = CombineSeeds(NameSeeds, YuefuSeeds);
+            NameSeeds = CombineSeeds(NameSeeds, GushiSeeds);
+            //NameSeeds = CombineSeeds(NameSeeds, SongciSeeds);
+            //NameSeeds = CombineSeeds(NameSeeds, ShijingSeeds);
+            #endregion
+
+            SkillNameSeeds = new();
+            SkillNameSeeds.AddRange(CifuSeeds);    // 9
+            SkillNameSeeds = CombineSeeds(SkillNameSeeds, TangshiSeeds);
+            SkillNameSeeds = CombineSeeds(SkillNameSeeds, ChuciSeeds);
+            //SkillNameSeeds.AddRange(TangshiSeeds); // 8.5
+            //SkillNameSeeds.AddRange(ChuciSeeds);   // 8
+            //SkillNameSeeds.AddRange(YuefuSeeds);   // 7.5
+            //SkillNameSeeds.AddRange(GushiSeeds);   // 7
+            //SkillNameSeeds.AddRange(SongciSeeds);  // 6.5
+            //SkillNameSeeds.AddRange(ShijingSeeds); // 6
+        }
+        public List<SeedEntity> InitializeSeed(string dist)
+        {
+            List<SeedEntity> seeds = new();
+            var book = FileUtils.ReadFile(Path.Join(PathConst.DIST_PATH, dist));
+            var nameDicts = JsonSerializer.Deserialize<List<NameDistEntity>>(book);
+            if (nameDicts != null)
             {
-                var book = FileUtils.ReadFile(Path.Join(PathConst.DIST_PATH, dist));
-                var nameDicts = JsonSerializer.Deserialize<List<DistEntity>>(book);
                 foreach (var dict in nameDicts)
                 {
                     if (dict.content == null)
                     {
                         continue;
                     }
-                    var sentences = dict.content.Split('。');
-                    foreach (var sentence in sentences)
+                    var chars = dict.content.ToCharArray();
+                    foreach (var word in chars)
                     {
-                        if (sentence.Contains('?'))
+                        if (!" .　()（）[]【】\"”“；;,，、。：:?？?*&^%$#@!！~+-——<>《》0123456789".Contains(word))
                         {
-                            var sentences2 = sentence.Split('?');
-                            foreach (var sentence2 in sentences2)
+                            if (seeds.Any(x => x.Text == word.ToString()))
                             {
-                                NameSeeds.Add(new SeedEntity()
+                                var seed = seeds.First(x => x.Text == word.ToString());
+                                seed.Weight++;
+                            }
+                            else
+                            {
+                                seeds.Add(new SeedEntity()
                                 {
-                                    Text = sentence2.Trim(),
-                                    Weight = 10,
+                                    Text = word.ToString(),
+                                    Weight = 1
                                 });
                             }
                         }
-                        else
-                        {
-                            NameSeeds.Add(new SeedEntity()
-                            {
-                                Text = sentence.Trim(),
-                                Weight = 10,
-                            });
-                        }
                     }
-
                 }
-
             }
 
-            #endregion
+            return seeds;
+        }
+
+        public List<SeedEntity> CombineSeeds(List<SeedEntity> seeds, List<SeedEntity> seeds2)
+        {
+            foreach (var seed in seeds2)
+            {
+                if (seeds.Any(x => x.Text == seed.Text))
+                {
+                    seeds.First(x => x.Text == seed.Text).Weight += seed.Weight;
+                }
+                else
+                {
+                    seeds.Add(seed);
+                }
+            }
+            return seeds;
 
         }
 
+        #region 姓名种子池
 
         public string GetRandomFullName(string surname = "")
         {
@@ -585,31 +659,30 @@ namespace CommandSims.Modules.Seeds
 
         public string GetLastName()
         {
-            var sentense = GetNameSentense();
             var result = "";
             var charCount = RandomUtils.Next(1, 3);
-            if (sentense.Length < charCount)
+            var weights = NameSeeds.Select(x => x.Weight).ToList();
+            var words = RandomUtils.GetNextListWithWeight(weights, charCount);
+            foreach (var index in words)
             {
-                charCount = sentense.Length;
-            }
-            for (var i = 0; i < charCount; i++)
-            {
-                var index = RandomUtils.Next(sentense.Length);
-                result += sentense[index];
+                result += NameSeeds[index].Text;
             }
             return result;
         }
 
-        private string GetNameSentense()
+        public string GetSkillName(int count = 2)
         {
-            var weights = NameSeeds.Select(x => x.Weight).ToList();
-            var sentense = NameSeeds[RandomUtils.GetNextWithWeight(weights)].Text;
-            sentense = sentense.Replace(" ", "").Replace("，", "").Replace(",", "").Replace("(", "").Replace(")", "").Replace("“", "").Replace("”", "");
-            if (sentense.Length == 0)
+            var result = "";
+            var weights = SkillNameSeeds.Select(x => x.Weight).ToList();
+            var words = RandomUtils.GetNextListWithWeight(weights, count);
+            foreach (var index in words)
             {
-                sentense = GetNameSentense();
+                result += SkillNameSeeds[index].Text;
             }
-            return sentense;
+            return result;
         }
+        #endregion
+
+
     }
 }

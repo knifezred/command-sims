@@ -68,7 +68,7 @@ namespace CommandSims.Stories
 
         public string ReRandomName()
         {
-            var name = new SeedsData().GetRandomFullName();
+            var name = Sims.Seeds.GetRandomFullName();
             UI.PrintLine(name);
             var reName = AnsiConsole.Prompt(new SelectionPrompt<string>()
                .Title("继续随机")
