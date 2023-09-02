@@ -1,4 +1,5 @@
 ﻿using CommandSims.Core;
+using CommandSims.Enums;
 using CommandSims.Modules.Seeds;
 using Spectre.Console;
 using System;
@@ -34,9 +35,9 @@ namespace CommandSims.Stories
             {
                 name = AnsiConsole.Ask<string>("请输入名字:");
             }
-            var gender = UI.ChooseGender();
-            var race = UI.ChooseRace();
-            Sims.Context.PlayerInfo = new Entity.Npc.Player
+            var race = UI.EnumSelect<RaceEnum>();
+            var gender = UI.EnumSelect<GenderEnum>();
+            Sims.Context.Player = new Entity.Npc.Player
             {
                 Id = 0,
                 Exp = 0,
@@ -48,7 +49,7 @@ namespace CommandSims.Stories
                 Race = race
             };
             Sims.World.UpdateWorldTime(365);
-            Sims.Context.PlayerInfo.Age = 1;
+            Sims.Context.Player.Age = 1;
             var babySeize = AnsiConsole.Prompt(new SelectionPrompt<string>()
                    .Title($"{Sims.WorldTime:yyyy年MM月dd},抓周")
                    .PageSize(10)
@@ -62,8 +63,7 @@ namespace CommandSims.Stories
             // 10
             // 14
             // 16
-            UI.ShowPlayerInfo();
-
+            new S1_BlackHouse().WakeUp();
         }
 
         public string ReRandomName()

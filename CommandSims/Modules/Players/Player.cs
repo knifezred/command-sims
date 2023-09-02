@@ -56,6 +56,36 @@ namespace CommandSims.Entity.Npc
         }
 
 
+        public void Eat(int itemId)
+        {
+
+        }
+
+        public void Sleep(int minites)
+        {
+
+        }
+
+        public void Attack()
+        {
+            // 选择对象
+            // 
+        }
+
+        public void Talk()
+        {
+
+        }
+
+        public void DoingNothing()
+        {
+
+        }
+
+        public void Training()
+        {
+
+        }
 
     }
 }

@@ -61,7 +61,7 @@ namespace CommandSims.Service
             _timer.Dispose();
             UI.LoadStartPanel();
             // 释放UI
-            UI.SetFree();
+            UI.StopWork();
             Sims.Game.ReadCommand(Console.ReadLine(), 1);
         }
     }

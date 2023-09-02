@@ -24,7 +24,7 @@ namespace CommandSims.Core
         {
             Context = new ArchiveContext
             {
-                PlayerInfo = new Player(),
+                Player = new Player(),
                 BagItems = new List<ArchiveItem>(),
                 StorageItems = new List<ArchiveItem>(),
                 WorldData = new ArchiveWorldData()
@@ -48,7 +48,7 @@ namespace CommandSims.Core
 
         public static Player? GetPlayer(int playerId)
         {
-            var player = Sims.Context.PlayerInfo;
+            var player = Sims.Context.Player;
             if (playerId > 0)
             {
                 player = Sims.World.NpcList.FirstOrDefault(x => x.Id == playerId);

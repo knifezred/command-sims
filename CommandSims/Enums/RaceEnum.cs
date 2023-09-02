@@ -11,6 +11,7 @@ namespace CommandSims.Enums
     /// <summary>
     /// 种族
     /// </summary>
+    [Description("种族")]
     public enum RaceEnum
     {
         [Display(Name = "人族")]

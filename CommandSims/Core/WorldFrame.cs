@@ -1,7 +1,6 @@
 ﻿using CommandSims.Entity.Base;
 using CommandSims.Enums;
 using CommandSims.Modules.Maps;
-using CommandSims.Modules.Npc;
 using CommandSims.Modules.Players;
 using System;
 using System.Collections.Generic;
@@ -101,7 +100,7 @@ namespace CommandSims.Core
 
         public SimpleListItem GetWorldWeather()
         {
-            return WeatherList.First(x => x.Text == Weather);
+            return WeatherList.First(x => x.Value == Weather);
         }
 
         public void ChangeWeather(string weather)
@@ -124,6 +123,14 @@ namespace CommandSims.Core
         #endregion
 
         #region 时间系统
+        /**
+         * 地图移动需要时间
+         * 玩家操作需要时间
+         * 时间精确到分钟
+         * 睡觉更新地图NPC事件
+         * 
+         */
+
         /// <summary>
         /// 系统时间
         /// </summary>
@@ -178,8 +185,9 @@ namespace CommandSims.Core
         public void AddNpc()
         {
             // 获取最大ID
-            var maxId = NpcData.Players.OrderByDescending(x => x.Id).First().Id;
+            var maxId = Sims.Context.WorldData.ActiveNpcs.OrderByDescending(x => x.Id).First().Id;
             maxId++;
+
             UI.PrintLine("有新人出生了");
         }
         #endregion

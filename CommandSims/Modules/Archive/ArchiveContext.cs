@@ -17,7 +17,7 @@ namespace CommandSims.Modules.Archive
 
         public DateTime SavedTime { get; set; }
 
-        public Player PlayerInfo { get; set; }
+        public Player Player { get; set; }
 
         public int Money { get; set; }
 
@@ -25,9 +25,6 @@ namespace CommandSims.Modules.Archive
 
         public List<ArchiveItem> StorageItems { get; set; }
 
-        /// <summary>
-        /// 所在地图
-        /// </summary>
         public MapEntity CurrentMap { get; set; }
 
         public ArchiveWorldData WorldData { get; set; }

@@ -141,7 +141,7 @@ namespace CommandSims.Core
                     case "move":
                     case "map":
                     case "地图":
-                        UI.ShowMap(0);
+                        UI.LiveMap(0);
                         break;
                     case "open":
                     case "o":
@@ -160,7 +160,7 @@ namespace CommandSims.Core
             }
             if (eventId > 0)
             {
-                UI.SetFree();
+                UI.StopWork();
                 ReadCommand(Console.ReadLine(), eventId);
             }
         }
@@ -171,13 +171,7 @@ namespace CommandSims.Core
         /// </summary>
         public void PlayerCommandAction()
         {
-            var enums = EnumExtension.ToListItems(typeof(PlayerActionEnum));
-            var actions = enums.Select(x => x.Text).ToArray();
-            var result = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                .Title("[green]你可进行如下操作[/]")
-                .PageSize(10)
-                .AddChoices(actions));
-            var action = EnumExtension.GetValueFromName<PlayerActionEnum>(result);
+            var action = UI.EnumSelect<PlayerActionEnum>("[green]你可进行如下操作[/]");
             switch (action)
             {
                 case PlayerActionEnum.DoNothing:
@@ -203,7 +197,7 @@ namespace CommandSims.Core
         public bool PreCommandActionCheck(PlayerActionEnum action, int playerId)
         {
             bool result = false;
-            var player = Sims.Context.PlayerInfo;
+            var player = Sims.Context.Player;
             if (playerId > 0)
             {
                 //npc
@@ -241,7 +235,7 @@ namespace CommandSims.Core
         public int RollDice(int maxPoint = 26)
         {
             var result = RandomUtils.Next(maxPoint);
-            return result + Sims.Context.PlayerInfo.Lucky;
+            return result + Sims.Context.Player.Lucky;
         }
 
         public bool RollTheDice(int successPoint, int maxPoint = 26)
@@ -326,5 +320,6 @@ namespace CommandSims.Core
         }
 
         #endregion
+
     }
 }

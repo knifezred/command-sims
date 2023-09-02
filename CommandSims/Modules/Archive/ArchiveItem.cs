@@ -11,6 +11,5 @@ namespace CommandSims.Modules.Archive
     {
 
         public string Count { get; set; }
-
     }
 }

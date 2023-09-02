@@ -31,6 +31,9 @@ namespace CommandSims.Entity.Base
         [Description("重量")]
         public double Weight { get; set; }
 
+        [Description("价格")]
+        public int Price { get; set; }
+
 
         public void Use()
         {

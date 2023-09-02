@@ -18,7 +18,7 @@ namespace CommandSims.Modules.Archive
         public List<ActiveNpc> ActiveNpcs { get; set; }
 
         public List<MapEntity> Maps { get; set; }
-
+        
         public ArchiveWorldData()
         {
             ActiveNpcs = new List<ActiveNpc>();

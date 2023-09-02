@@ -1,4 +1,5 @@
 ﻿using CommandSims.Entity.Base;
+using CommandSims.Enums;
 using CommandSims.Utils;
 using System;
 using System.Collections;
@@ -88,6 +89,7 @@ namespace KnifeZ.Unity.Extensions
             }
             return rv;
         }
+
         #endregion
 
 
@@ -116,28 +118,6 @@ namespace KnifeZ.Unity.Extensions
             return attribute?.Description;
         }
 
-        public static T GetValueFromName<T>(this string name) where T : Enum
-        {
-            var type = typeof(T);
-
-            foreach (var field in type.GetFields())
-            {
-                if (Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) is DisplayAttribute attribute)
-                {
-                    if (attribute.Name == name)
-                    {
-                        return (T)field.GetValue(null);
-                    }
-                }
-
-                if (field.Name == name)
-                {
-                    return (T)field.GetValue(null);
-                }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(name));
-        }
 
         /// <summary>
         /// 把枚举转换为键值对集合
@@ -174,6 +154,18 @@ namespace KnifeZ.Unity.Extensions
             T[] Arr = (T[])Enum.GetValues(src.GetType());
             int j = Array.IndexOf<T>(Arr, src) + 1;
             return (Arr.Length == j) ? Arr[0] : Arr[j];
+        }
+
+        public static string GetDescription(this Type slef)
+        {
+            var description = "";
+            var displayName = slef.GetCustomAttributesData().Where(x => x.AttributeType == typeof(DescriptionAttribute)).FirstOrDefault();
+            if (displayName != null)
+            {
+                description = displayName.ConstructorArguments[0].Value?.ToString();
+            }
+            description ??= "未定义";
+            return description;
         }
     }
 }
