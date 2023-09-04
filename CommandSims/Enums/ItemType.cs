@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace CommandSims.Enums
 {
     [Description("物品分类")]
-    public enum ItemEnum
+    public enum ItemType
     {
         [Display(Name = "未分类")]
         Uncategorized = 0,

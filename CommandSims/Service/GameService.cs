@@ -50,19 +50,11 @@ namespace CommandSims.Service
         {
             return Task.Run(() =>
             {
-                // 等待主机启动后再进入主页
-                _timer = new Timer(TimeWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+                UI.LoadStartPanel();
+                // 释放UI
+                UI.StopWork();
+                Sims.Game.ReadCommand(Console.ReadLine(), 1);
             }, stoppingToken);
-        }
-
-        private void TimeWork(object? state)
-        {
-            // 释放timmer
-            _timer.Dispose();
-            UI.LoadStartPanel();
-            // 释放UI
-            UI.StopWork();
-            Sims.Game.ReadCommand(Console.ReadLine(), 1);
         }
     }
 }

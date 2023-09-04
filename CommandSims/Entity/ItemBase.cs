@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommandSims.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -23,10 +24,10 @@ namespace CommandSims.Entity.Base
         public string Category { get; set; }
 
         [Description("类型")]
-        public string Type { get; set; }
+        public ItemType Type { get; set; }
 
         [Description("等级")]
-        public string Level { get; set; }
+        public GradeEnum Level { get; set; }
 
         [Description("重量")]
         public double Weight { get; set; }

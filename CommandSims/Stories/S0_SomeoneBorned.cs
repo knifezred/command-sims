@@ -1,5 +1,6 @@
 ﻿using CommandSims.Core;
 using CommandSims.Enums;
+using CommandSims.Modules.PokerCards;
 using CommandSims.Modules.Seeds;
 using Spectre.Console;
 using System;
@@ -18,6 +19,10 @@ namespace CommandSims.Stories
     {
         public void PlayerBorn()
         {
+            var pokerEngine = new PokerEngine();
+            pokerEngine.PlayGame();
+
+
             Sims.World.CreateNewWorld(0);
             AnsiConsole.Write(new Rule("[red]序章[/]"));
             var msg = string.Format("{0},{1},你出生了", Sims.World.GetWorldTime(), Sims.Weather.Value);
