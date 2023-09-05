@@ -16,6 +16,8 @@ namespace CommandSims.Modules.PokerCards
 
         public int HandIndex { get; set; }
 
+        public string LastOutCard { get; set; }
+
         public List<CardEntity> Cards { get; set; }
 
     }

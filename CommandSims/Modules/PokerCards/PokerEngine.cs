@@ -205,6 +205,7 @@ namespace CommandSims.Modules.PokerCards
                 i--;
             }
             //Console.OutputEncoding = Encoding.UTF8;
+            Console.OutputEncoding = Encoding.Unicode;
             CardPlayer cardPlayer = Players.First(x => x.Id == 0);
             LoadCards(cardPlayer);
             CallLandloard();
@@ -214,6 +215,7 @@ namespace CommandSims.Modules.PokerCards
         }
 
         #region 斗地主
+        private static int PointRatio = 1;
         public void LoadCards(CardPlayer player)
         {
             Console.WriteLine($"【牌组-{player.Name}】{player.Cards.OrderByDescending(x => x.Point).Select(x => x.Name).ToSepratedString(seperator: " ")}");
@@ -243,14 +245,24 @@ namespace CommandSims.Modules.PokerCards
                 }
                 if (call != LandloarActionEnum.pass)
                 {
+                    if (call == LandloarActionEnum.call)
+                    {
+                        PointRatio = 1;
+                    }
+                    if (call == LandloarActionEnum.doubleCall)
+                    {
+                        PointRatio = 2;
+                    }
+                    if (call == LandloarActionEnum.tripleCall)
+                    {
+                        PointRatio = 3;
+                    }
                     var newHandIndex = Players.FindIndex(x => x.Id == player.Id);
                     UI.PrintLine($"底牌：{SuitCards[^3].Name} {SuitCards[^2].Name} {SuitCards[^1].Name}");
                     player.Cards.Add(SuitCards[^3]);
                     player.Cards.Add(SuitCards[^2]);
                     player.Cards.Add(SuitCards[^1]);
                     ChangeHandFirst(newHandIndex);
-                    // 明牌
-                    //LoadCards(player);
                     anyLoard = true;
                     break;
                 }
@@ -260,6 +272,8 @@ namespace CommandSims.Modules.PokerCards
                 RestartGame();
             }
         }
+
+        public static CardPlayer CurrentHandPlayer { get; set; }
 
         public void PlayAction()
         {
@@ -272,7 +286,7 @@ namespace CommandSims.Modules.PokerCards
                     if (player.Id == 0)
                     {
                         LoadCards(player);
-                        tableCardGroup = PlayCardAction(player);
+                        tableCardGroup = PlayCardAction(player, tableCardGroup);
                     }
                     else
                     {
@@ -295,45 +309,68 @@ namespace CommandSims.Modules.PokerCards
             if (loard.Cards.Any())
             {
                 UI.PrintLine("地主输");
-                loard.Point -= 10 * 2;
-                Players[1].Point += 10;
-                Players[2].Point += 10;
+                loard.Point -= 10 * PointRatio * 2;
+                Players[1].Point += 10 * PointRatio;
+                Players[2].Point += 10 * PointRatio;
             }
             else
             {
                 UI.PrintLine("地主赢");
-                loard.Point += 10 * 2;
-                Players[1].Point -= 10;
-                Players[2].Point -= 10;
+                loard.Point += 10 * PointRatio * 2;
+                Players[1].Point -= 10 * PointRatio;
+                Players[2].Point -= 10 * PointRatio;
             }
             foreach (var player in Players)
             {
                 UI.PrintLine($"{player.Name}-{player.Point}");
             }
         }
+        /// <summary>
+        /// 玩家出牌
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="tableGroup"></param>
+        /// <returns></returns>
 
-        public string PlayCardAction(CardPlayer player)
+        public string PlayCardAction(CardPlayer player, string tableGroup)
         {
             var cards = Console.ReadLine();
-            var cardList = cards.ToArray();
-            if (CheckPlay(player, cards))
+            if (cards == "" || cards == "p" || cards == "P" || cards == "pass" || cards == "PASS")
             {
-                foreach (var item in cardList)
-                {
-                    var currentCard = player.Cards.Where(x => x.Value.Contains(item)).ToList();
-                    player.Cards.Remove(currentCard.First());
-                }
+                cards = "";
+                player.LastOutCard = "";
             }
             else
             {
-                UI.PrintRedLine("请按规则出牌");
-                PlayCardAction(player);
+                var cardList = cards.ToArray();
+                if (CheckPlay(player, cards, tableGroup))
+                {
+                    foreach (var item in cardList)
+                    {
+                        var currentCard = player.Cards.Where(x => x.Value.Contains(item)).ToList();
+                        player.Cards.Remove(currentCard.First());
+                    }
+                }
+                else
+                {
+                    UI.PrintRedLine("请按规则出牌");
+                    PlayCardAction(player, tableGroup);
+                }
+                player.LastOutCard = cards;
+                CurrentHandPlayer = player;
             }
             return cards;
 
         }
 
-        public bool CheckPlay(CardPlayer player, string outCards)
+        /// <summary>
+        /// 验证出牌是否符合规则
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="outCards"></param>
+        /// <param name="tableGroup"></param>
+        /// <returns></returns>
+        public bool CheckPlay(CardPlayer player, string outCards, string tableGroup)
         {
             var result = true;
             var cardPoints = outCards.ToArray();
@@ -344,6 +381,16 @@ namespace CommandSims.Modules.PokerCards
                 {
                     result = false;
                     break;
+                }
+            }
+            if (tableGroup != player.LastOutCard)
+            {
+                // 验证两次牌组一致不一致
+                result = CardGroupIsEqual(outCards, tableGroup);
+                // 验证大小
+                if (result)
+                {
+                    result = CanHandleTableCardGroup(outCards, tableGroup);
                 }
             }
             return result;
@@ -370,6 +417,150 @@ namespace CommandSims.Modules.PokerCards
                 }
             }
             Players = temp.OrderBy(x => x.HandIndex).ToList();
+        }
+
+        /// <summary>
+        /// 验证出牌类型是否一致
+        /// </summary>
+        /// <param name="outCardGroup"></param>
+        /// <param name="tableCardGroup"></param>
+        /// <returns></returns>
+        public bool CardGroupIsEqual(string outCardGroup, string tableCardGroup)
+        {
+            return GetCardGroupType(outCardGroup) == GetCardGroupType(tableCardGroup);
+        }
+        /// <summary>
+        /// 压牌
+        /// </summary>
+        /// <param name="outCardGroup"></param>
+        /// <param name="tableCardGroup"></param>
+        /// <returns></returns>
+        public bool CanHandleTableCardGroup(string outCardGroup, string tableCardGroup)
+        {
+            // todo 
+            Dictionary<string, int> outCardGroupDict = new Dictionary<string, int>();
+            foreach (var card in outCardGroup.ToArray())
+            {
+                if (outCardGroupDict.ContainsKey(card.ToString()))
+                {
+                    outCardGroupDict[card.ToString()]++;
+                }
+                else
+                {
+                    outCardGroupDict.Add(card.ToString(), 1);
+                }
+            }
+            Dictionary<string, int> tableCardGroupDict = new Dictionary<string, int>();
+            foreach (var card in tableCardGroup.ToArray())
+            {
+                if (tableCardGroupDict.ContainsKey(card.ToString()))
+                {
+                    tableCardGroupDict[card.ToString()]++;
+                }
+                else
+                {
+                    tableCardGroupDict.Add(card.ToString(), 1);
+                }
+            }
+            if (outCardGroupDict.Count == 1)
+            {
+                var card = SuitCards.First(x => x.Value.Contains(outCardGroupDict.ElementAt(0).Key));
+                var tableCard = SuitCards.First(x => x.Value.Contains(tableCardGroup.ElementAt(0).Key));
+                if (card.Point > tableCard.Point)
+                {
+                    return true;
+                }
+            }
+            if (outCardGroupDict.Count == 2)
+            {
+
+            }
+
+            return false;
+
+        }
+
+        public CardGroupType GetCardGroupType(string cardGroup)
+        {
+            var cardGroupType = CardGroupType.BadCard;
+            var cardPoints = cardGroup.ToArray();
+            Dictionary<string, int> keyValuePairs = new Dictionary<string, int>();
+            foreach (var card in cardPoints)
+            {
+                if (keyValuePairs.ContainsKey(card.ToString()))
+                {
+                    keyValuePairs[card.ToString()]++;
+                }
+                else
+                {
+                    keyValuePairs.Add(card.ToString(), 1);
+                }
+            }
+            if (keyValuePairs.Count == 1)
+            {
+                if (keyValuePairs.First().Value == 1)
+                {
+                    return CardGroupType.Single;
+                }
+                if (keyValuePairs.First().Value == 2)
+                {
+                    return CardGroupType.Double;
+                }
+                if (keyValuePairs.First().Value == 3)
+                {
+                    return CardGroupType.Triple;
+                }
+            }
+            if (keyValuePairs.Count == 2)
+            {
+                var tmpList = keyValuePairs.OrderByDescending(x => x.Value).ToList();
+                // 全单张 只有王炸
+                if (keyValuePairs.Count(x => x.Value == 1) == keyValuePairs.Count)
+                {
+                    if ((SuitCards.First(x => x.Point == 54).Value.Contains(keyValuePairs.ElementAt(0).Key) ||
+                        SuitCards.First(x => x.Point == 53).Value.Contains(keyValuePairs.ElementAt(0).Key))
+                        &&
+                        (SuitCards.First(x => x.Point == 54).Value.Contains(keyValuePairs.ElementAt(1).Key) ||
+                        SuitCards.First(x => x.Point == 53).Value.Contains(keyValuePairs.ElementAt(1).Key)))
+                    {
+                        return CardGroupType.Boom;
+                    }
+                }
+                // 连对
+                if (keyValuePairs.Count(x => x.Value == 2) == keyValuePairs.Count)
+                {
+
+                }
+                foreach (var tmp in tmpList)
+                {
+                    if (tmp.Value == 1)
+                    {
+                        if (SuitCards.First(x => x.Point == 54).Value.Contains(tmp.Key) ||
+                            SuitCards.First(x => x.Point == 53).Value.Contains(tmp.Key))
+                        {
+                            return CardGroupType.Boom;
+                        }
+                    }
+                }
+
+                if (SuitCards.First(x => x.Point == 54).Value.Contains(keyValuePairs.ElementAt(0).Key) ||
+                    SuitCards.First(x => x.Point == 54).Value.Contains(keyValuePairs.ElementAt(1).Key))
+                {
+                    return CardGroupType.Boom;
+                }
+                if (keyValuePairs.Any(x => x.Value == 3))
+                {
+                    if (cardGroup.Length == 4)
+                    {
+                        return CardGroupType.TripleWithOne;
+                    }
+                    else
+                    {
+                        return CardGroupType.TripleWithTwo;
+                    }
+                }
+            }
+            return cardGroupType;
         }
 
     }

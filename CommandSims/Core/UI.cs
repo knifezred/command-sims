@@ -456,7 +456,6 @@ namespace CommandSims.Core
                                     .PageSize(10)
                                     .AddChoices(items)
                                     .UseConverter(x => x.Text));
-
             AnsiConsole.MarkupLine($"{title} - {result.Text}");
             return (TEnum)Enum.Parse(typeof(TEnum), result.Value);
         }
