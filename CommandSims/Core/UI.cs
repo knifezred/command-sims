@@ -1,5 +1,6 @@
 ﻿using CommandSims.Entity.Base;
 using CommandSims.Enums;
+using CommandSims.Modules.Events;
 using CommandSims.Modules.Maps;
 using CommandSims.Stories;
 using CommandSims.Utils;
@@ -432,9 +433,9 @@ namespace CommandSims.Core
             AnsiConsole.MarkupLine($"[red]{message}[/]");
         }
 
-        public static ComboSelectListItem ComboSelect(List<ComboSelectListItem> items, string title)
+        public static SimpleListItem ComboSelect(List<SimpleListItem> items, string title)
         {
-            var result = AnsiConsole.Prompt(new SelectionPrompt<ComboSelectListItem>()
+            var result = AnsiConsole.Prompt(new SelectionPrompt<SimpleListItem>()
                                     .Title(title)
                                     .PageSize(10)
                                     .AddChoices(items.ToArray())
@@ -443,7 +444,17 @@ namespace CommandSims.Core
             AnsiConsole.MarkupLine($"{title} you choose {result.Text} !");
             return result;
         }
+        public static EventSelectItem EventSelect(List<EventSelectItem> items, string title)
+        {
+            var result = AnsiConsole.Prompt(new SelectionPrompt<EventSelectItem>()
+                                    .Title(title)
+                                    .PageSize(10)
+                                    .AddChoices(items.ToArray())
+                                    .UseConverter(x => x.Text));
 
+            AnsiConsole.MarkupLine($"{title} you choose {result.Text} !");
+            return result;
+        }
         public static TEnum EnumSelect<TEnum>(string title = "")
         {
             if (title == "")
@@ -458,6 +469,22 @@ namespace CommandSims.Core
                                     .UseConverter(x => x.Text));
             AnsiConsole.MarkupLine($"{title} - {result.Text}");
             return (TEnum)Enum.Parse(typeof(TEnum), result.Value);
+        }
+
+        public static void LoadEvent(EventEntity entity)
+        {
+            if (entity != null)
+            {
+                if (entity.Selects.Any())
+                {
+                    EventSelect(entity.Selects, entity.Description);
+                }
+                else
+                {
+                    UI.PrintLine(entity.Description);
+
+                }
+            }
         }
 
         #endregion

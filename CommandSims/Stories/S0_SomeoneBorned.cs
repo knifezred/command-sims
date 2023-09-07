@@ -19,14 +19,8 @@ namespace CommandSims.Stories
     {
         public void PlayerBorn()
         {
-            var pokerEngine = new PokerEngine();
-            pokerEngine.PlayGame();
-
-
             Sims.World.CreateNewWorld(0);
             AnsiConsole.Write(new Rule("[red]序章[/]"));
-            var msg = string.Format("{0},{1},你出生了", Sims.World.GetWorldTime(), Sims.Weather.Value);
-            UI.PrintLine(msg);
             UI.PrintLine("");
             var name = AnsiConsole.Prompt(new SelectionPrompt<string>()
                    .Title("名字")
@@ -48,26 +42,13 @@ namespace CommandSims.Stories
                 Exp = 0,
                 HP = 100,
                 MP = 100,
-                Speed = 10,
                 Name = name,
                 Gender = gender,
                 Race = race
             };
             Sims.World.UpdateWorldTime(365);
             Sims.Context.Player.Age = 1;
-            var babySeize = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                   .Title($"{Sims.WorldTime:yyyy年MM月dd},抓周")
-                   .PageSize(10)
-                   .AddChoices(new string[] { "1. 一把小刀", "2. 算盘", "3. 道书", "4. 佛经", "5. 剪刀" }));
-            AnsiConsole.MarkupLine($"1岁抓周时，你选择了[green]{babySeize.Split('.')[1]}[/]");
-            // todo 添加用户属性
-
-            // 1
-            // 3
-            // 6
-            // 10
-            // 14
-            // 16
+            ChildhoodEvents();
             new S1_BlackHouse().WakeUp();
         }
 
@@ -84,6 +65,33 @@ namespace CommandSims.Stories
                 name = ReRandomName();
             }
             return name;
+        }
+
+        public void ChildhoodEvents()
+        {
+            AnsiConsole.Write(new Rule("[red]童年[/]"));
+            // 出生前 自定义性别姓名种族
+            var msg = string.Format("{0},{1},你出生了", Sims.World.GetWorldTime(), Sims.Weather.Value);
+
+            UI.PrintLine(msg);
+            UI.PrintLine("");
+            // 家境
+
+            var babySeize = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                   .Title($"{Sims.WorldTime:yyyy年MM月dd},抓周")
+                   .PageSize(10)
+                   .AddChoices(new string[] { "1. 一把小刀", "2. 算盘", "3. 道书", "4. 佛经", "5. 剪刀" }));
+            AnsiConsole.MarkupLine($"1岁抓周时，你选择了[green]{babySeize.Split('.')[1]}[/]");
+
+        }
+
+        /// <summary>
+        /// 打扑克
+        /// </summary>
+        public void PokerGame()
+        {
+            var pokerEngine = new PokerEngine();
+            pokerEngine.PlayGame();
         }
 
     }

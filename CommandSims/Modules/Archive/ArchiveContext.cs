@@ -28,5 +28,10 @@ namespace CommandSims.Modules.Archive
         public MapEntity CurrentMap { get; set; }
 
         public ArchiveWorldData WorldData { get; set; }
+        /// <summary>
+        /// 解锁成就
+        /// </summary>
+        public List<int> Archievements { get; set; }
+
     }
 }

@@ -465,7 +465,7 @@ namespace CommandSims.Modules.PokerCards
             if (outCardGroupDict.Count == 1)
             {
                 var card = SuitCards.First(x => x.Value.Contains(outCardGroupDict.ElementAt(0).Key));
-                var tableCard = SuitCards.First(x => x.Value.Contains(tableCardGroup.ElementAt(0).Key));
+                var tableCard = SuitCards.First(x => x.Value.Contains(tableCardGroupDict.ElementAt(0).Key));
                 if (card.Point > tableCard.Point)
                 {
                     return true;

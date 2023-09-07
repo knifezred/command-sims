@@ -1,6 +1,8 @@
 ﻿using CommandSims.Constants;
+using CommandSims.Entity;
 using CommandSims.Enums;
 using CommandSims.Modules.Archive;
+using CommandSims.Modules.Events;
 using CommandSims.Modules.Maps;
 using CommandSims.Stories;
 using CommandSims.Utils;
@@ -16,6 +18,12 @@ namespace CommandSims.Core
 {
     public class GameFramework
     {
+        public List<EventEntity> EventList { get; set; }
+
+        public GameFramework() {
+            LoadEvents();
+        }
+
         #region 存档
         /// <summary>
         /// 存档
@@ -235,7 +243,7 @@ namespace CommandSims.Core
         public int RollDice(int maxPoint = 26)
         {
             var result = RandomUtils.Next(maxPoint);
-            return result + Sims.Context.Player.Lucky;
+            return result + Sims.Context.Player.Attribute.Lucky;
         }
 
         public bool RollTheDice(int successPoint, int maxPoint = 26)
@@ -317,6 +325,27 @@ namespace CommandSims.Core
                 Sims.Context.CurrentMap = nextMap;
             }
             return true;
+        }
+
+        #endregion
+
+        #region 事件处理
+
+        public void LoadEvents()
+        {
+            EventList = new EventsData().Events;
+
+        }
+
+        public bool IsEventAvailable(int id)
+        {
+
+            return false;
+        }
+
+        public List<EffectEntity> GetEffects(params int[] ids)
+        {
+            return Sims.Seeds.Effects.Where(x => ids.Any(p => p == x.Id)).ToList();
         }
 
         #endregion

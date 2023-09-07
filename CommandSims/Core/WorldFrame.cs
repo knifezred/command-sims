@@ -1,5 +1,7 @@
-﻿using CommandSims.Entity.Base;
+﻿using CommandSims.Entity;
+using CommandSims.Entity.Base;
 using CommandSims.Enums;
+using CommandSims.Modules.Events;
 using CommandSims.Modules.Maps;
 using CommandSims.Modules.Players;
 using System;
@@ -34,6 +36,8 @@ namespace CommandSims.Core
         }
 
         public List<ItemBase> ItemList { get; set; }
+
+
 
         public WorldFrame()
         {

@@ -1,4 +1,5 @@
 ﻿using CommandSims.Enums;
+using CommandSims.Modules.Players;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -26,12 +27,9 @@ namespace CommandSims.Entity.Npc
 
         public RaceEnum Race { get; set; }
 
+        public PlayerAttribute Attribute { get; set; }
+
         public int Exp { get; set; }
-
-        public int Speed { get; set; }
-
-        public int Lucky { get; set; }
-
 
         public int HP { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using CommandSims.Entity.Base;
+﻿using CommandSims.Entity;
+using CommandSims.Entity.Base;
 using CommandSims.Entity.Npc;
 using CommandSims.Modules.Archive;
 using CommandSims.Modules.Maps;
@@ -23,9 +24,14 @@ namespace CommandSims.Core
 
         public static SeedsData Seeds { get; set; }
 
+
         public static void StartInit()
         {
+            // 加载种子数据
             Seeds = new SeedsData();
+            // 加载游戏框架
+            Game = new GameFramework();
+            // 创建空存档
             Context = new ArchiveContext
             {
                 Player = new Player(),
@@ -33,8 +39,9 @@ namespace CommandSims.Core
                 StorageItems = new List<ArchiveItem>(),
                 WorldData = new ArchiveWorldData()
             };
-            Game = new GameFramework();
+            // 加载世界数据
             World = new WorldFrame();
+
         }
 
         public static void Reload(ArchiveContext archiveContext)
@@ -46,6 +53,7 @@ namespace CommandSims.Core
                 Sims.Context.WorldData = new ArchiveWorldData();
             }
             #endregion
+            World = new WorldFrame();
         }
 
         public static Player? GetPlayer(int playerId)

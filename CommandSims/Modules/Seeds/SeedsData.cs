@@ -1,4 +1,5 @@
 ﻿using CommandSims.Constants;
+using CommandSims.Entity;
 using CommandSims.Utils;
 using KnifeZ.Unity.Extensions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -47,8 +48,20 @@ namespace CommandSims.Modules.Seeds
 
         public List<SeedEntity> SkillNameSeeds { get; set; }
 
+        public List<EffectEntity> Effects { get; set; }
+
         public SeedsData()
         {
+            #region DistSeeds
+            YuefuSeeds = InitializeSeed("yuefu.json");
+            TangshiSeeds = InitializeSeed("tangshi.json");
+            SongciSeeds = InitializeSeed("songci.json");
+            ShijingSeeds = InitializeSeed("shijing.json");
+            GushiSeeds = InitializeSeed("gushi.json");
+            CifuSeeds = InitializeSeed("cifu.json");
+            ChuciSeeds = InitializeSeed("chuci.json");
+            #endregion
+
             #region SurnameData
             var surnames = @"赵 100
 钱 100
@@ -546,16 +559,6 @@ namespace CommandSims.Modules.Seeds
 
             #endregion
 
-            #region DistSeeds
-            YuefuSeeds = InitializeSeed("yuefu.json");
-            TangshiSeeds = InitializeSeed("tangshi.json");
-            SongciSeeds = InitializeSeed("songci.json");
-            ShijingSeeds = InitializeSeed("shijing.json");
-            GushiSeeds = InitializeSeed("gushi.json");
-            CifuSeeds = InitializeSeed("cifu.json");
-            ChuciSeeds = InitializeSeed("chuci.json");
-            #endregion
-
             #region NameData
             NameSeeds = new();
             NameSeeds.AddRange(CifuSeeds);
@@ -568,16 +571,24 @@ namespace CommandSims.Modules.Seeds
             //NameSeeds = CombineSeeds(NameSeeds, ShijingSeeds);
             #endregion
 
+            #region 技能名
+
             SkillNameSeeds = new();
             SkillNameSeeds.AddRange(CifuSeeds);    // 9
             SkillNameSeeds = CombineSeeds(SkillNameSeeds, TangshiSeeds);
             SkillNameSeeds = CombineSeeds(SkillNameSeeds, ChuciSeeds);
+
             //SkillNameSeeds.AddRange(TangshiSeeds); // 8.5
             //SkillNameSeeds.AddRange(ChuciSeeds);   // 8
             //SkillNameSeeds.AddRange(YuefuSeeds);   // 7.5
             //SkillNameSeeds.AddRange(GushiSeeds);   // 7
             //SkillNameSeeds.AddRange(SongciSeeds);  // 6.5
             //SkillNameSeeds.AddRange(ShijingSeeds); // 6
+
+            #endregion
+
+            Effects = new List<EffectEntity>();
+
         }
         public List<SeedEntity> InitializeSeed(string dist)
         {
