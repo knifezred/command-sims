@@ -31,6 +31,7 @@ namespace CommandSims.Core
             Seeds = new SeedsData();
             // 加载游戏框架
             Game = new GameFramework();
+            Game.AfterLoad();
             // 创建空存档
             Context = new ArchiveContext
             {

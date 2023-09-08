@@ -15,20 +15,22 @@ namespace CommandSims.Enums
     public enum GradeEnum
     {
         [Display(Name = "灰色")]
-        DarkGray = 1,
+        Gray = 1,
+        [Display(Name = "白色")]
+        Silver,
         [Display(Name = "绿色")]
-        DarkGreen, 
+        DarkGreen,
         [Display(Name = "蓝色")]
-        DarkBlue,
+        Navy,
         [Display(Name = "青色")]
-        DarkCyan,
+        RoyalBlue1,
         [Display(Name = "紫色")]
-        DarkMagenta,
+        Purple,
         [Display(Name = "橙色")]
-        DarkOrange,
+        Orange1,
         [Display(Name = "金色")]
-        DarkYellow,
+        Yellow1,
         [Display(Name = "红色")]
-        DarkRed,
+        Maroon,
     }
 }

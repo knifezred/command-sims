@@ -20,6 +20,7 @@ namespace CommandSims.Stories
         public void PlayerBorn()
         {
             Sims.World.CreateNewWorld(0);
+            UI.ShowGradeColor();
             AnsiConsole.Write(new Rule("[red]序章[/]"));
             UI.PrintLine("");
             var name = AnsiConsole.Prompt(new SelectionPrompt<string>()
@@ -44,12 +45,15 @@ namespace CommandSims.Stories
                 MP = 100,
                 Name = name,
                 Gender = gender,
-                Race = race
+                Race = race,
+                Age = 0,
             };
+            UI.LoadEvent("天赋选择");
             Sims.World.UpdateWorldTime(365);
-            Sims.Context.Player.Age = 1;
             ChildhoodEvents();
-            new S1_BlackHouse().WakeUp();
+
+            UI.ShowPlayerInfo();
+            //new S1_BlackHouse().WakeUp();
         }
 
         public string ReRandomName()
@@ -72,16 +76,10 @@ namespace CommandSims.Stories
             AnsiConsole.Write(new Rule("[red]童年[/]"));
             // 出生前 自定义性别姓名种族
             var msg = string.Format("{0},{1},你出生了", Sims.World.GetWorldTime(), Sims.Weather.Value);
-
             UI.PrintLine(msg);
-            UI.PrintLine("");
-            // 家境
+            UI.LoadEvent("家境");
+            UI.LoadEvent("抓周");
 
-            var babySeize = AnsiConsole.Prompt(new SelectionPrompt<string>()
-                   .Title($"{Sims.WorldTime:yyyy年MM月dd},抓周")
-                   .PageSize(10)
-                   .AddChoices(new string[] { "1. 一把小刀", "2. 算盘", "3. 道书", "4. 佛经", "5. 剪刀" }));
-            AnsiConsole.MarkupLine($"1岁抓周时，你选择了[green]{babySeize.Split('.')[1]}[/]");
 
         }
 

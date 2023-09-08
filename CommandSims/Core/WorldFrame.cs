@@ -144,9 +144,14 @@ namespace CommandSims.Core
 
         public void UpdateWorldTime(int day = 0, int hour = 0, int min = 0)
         {
+            var tempYear = WorldTime.Year;
             WorldTime = WorldTime.AddDays(day);
             WorldTime = WorldTime.AddHours(hour);
             WorldTime = WorldTime.AddMinutes(min);
+            if (WorldTime.Year - tempYear > 0)
+            {
+                Sims.Context.Player.Age += WorldTime.Year - tempYear;
+            }
         }
 
         /// <summary>

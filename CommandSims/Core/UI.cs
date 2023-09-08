@@ -283,7 +283,7 @@ namespace CommandSims.Core
         /// <summary>
         /// 开始面板
         /// </summary>
-        public static void LoadStartPanel()
+        public static void StartPanel()
         {
             UI.StartWork();
             AnsiConsole.Write(new FigletText("Command Sims").Centered().Color(Color.Blue));
@@ -304,6 +304,61 @@ namespace CommandSims.Core
             }
         }
 
+        public static void LoadEvent(string eventName)
+        {
+            var entity = Sims.Game.GetEvent(eventName);
+            if (entity != null)
+            {
+                if (entity.Selects.Any())
+                {
+                    if (entity.MaxSelect > 1)
+                    {
+                        EventMultiSelect(entity.Selects, entity.Description, entity.MaxSelect);
+                    }
+                    else
+                    {
+                        EventSelect(entity.Selects, entity.Description);
+                    }
+                }
+                else
+                {
+                    UI.PrintLine(entity.Description);
+
+                }
+                if (entity.Effects.Any())
+                {
+                    Sims.Game.ActiveEffects(entity.Effects);
+                }
+            }
+        }
+
+        public static void LoadAge(int playerId = 0)
+        {
+            var player = Sims.GetPlayer(playerId);
+            if (player != null)
+            {
+                PrintLine(string.Format("{0},{1},{2}岁了", Sims.WorldTime, player.Name, player.Age));
+            }
+
+        }
+
+        public static void ShowGradeColor()
+        {
+            AnsiConsole.Write(new BreakdownChart()
+                .Width(90)
+                // Add item is in the order of label, value, then color.
+                .AddItem("灰", 11, Color.Grey)
+                .AddItem("白", 11, Color.Silver)
+                .AddItem("绿", 11, Color.Green)
+                .AddItem("蓝", 11, Color.Navy)
+                .AddItem("青", 11, Color.RoyalBlue1)
+                .AddItem("紫", 11, Color.Purple)
+                .AddItem("橙", 11, Color.Orange1)
+                .AddItem("金", 11, Color.Yellow1)
+                .AddItem("红", 11, Color.Maroon)
+                );
+        }
+
         /// <summary>
         /// 显示角色信息
         /// </summary>
@@ -315,6 +370,11 @@ namespace CommandSims.Core
             {
                 PrintLine("------------------", ConsoleColor.Green);
                 PrintLine("姓名: " + player.Name, ConsoleColor.Cyan);
+                PrintLine("年龄: " + player.Age, ConsoleColor.Cyan);
+                PrintLine("体魄: " + player.Attribute.Strength + "        感知: " + player.Attribute.Perception
+                    + "         耐力: " + player.Attribute.Endurance + "          魅力: " + player.Attribute.Charisma
+                    + "         智力: " + player.Attribute.Intelligence + "         敏捷: " + player.Attribute.Agility
+                    + "         幸运: " + player.Attribute.Lucky);
                 PrintLine("------------------", ConsoleColor.Green);
             }
 
@@ -444,16 +504,51 @@ namespace CommandSims.Core
             AnsiConsole.MarkupLine($"{title} you choose {result.Text} !");
             return result;
         }
-        public static EventSelectItem EventSelect(List<EventSelectItem> items, string title)
+        public static void EventSelect(List<EventSelectItem> items, string title)
         {
             var result = AnsiConsole.Prompt(new SelectionPrompt<EventSelectItem>()
                                     .Title(title)
                                     .PageSize(10)
                                     .AddChoices(items.ToArray())
                                     .UseConverter(x => x.Text));
+            AnsiConsole.MarkupLine($"{title} 你选择了 {result.Value} !重选请按R,任意键继续...");
+            var readKey = Console.ReadKey();
+            if (readKey.Key == ConsoleKey.R)
+            {
+                EventSelect(items, title);
+            }
+            LoadEvent(result.EventName);
+        }
+        public static void EventMultiSelect(List<EventSelectItem> items, string title, int maxCount)
+        {
+            var result = AnsiConsole.Prompt(new MultiSelectionPrompt<EventSelectItem>()
+                                    .Title(title)
+                                    .PageSize(10)
+                                    .AddChoices(items.ToArray())
+                                    .UseConverter(x => x.Text));
+            if (result.Count > maxCount)
+            {
+                AnsiConsole.MarkupLine($"[darkorange]最多只能选择{maxCount}个!请重新选择[/]");
+                EventMultiSelect(items, title, maxCount);
 
-            AnsiConsole.MarkupLine($"{title} you choose {result.Text} !");
-            return result;
+            }
+            AnsiConsole.MarkupLine($"{title} 你选择了 {result.ToSepratedString(x => x.Value)} !重选请按R,任意键继续...");
+            var readKey = Console.ReadKey();
+            if (readKey.Key == ConsoleKey.R)
+            {
+                EventMultiSelect(items, title, maxCount);
+            }
+            foreach (var item in result)
+            {
+                if (item.EventName != "")
+                {
+                    LoadEvent(item.EventName);
+                }
+                if (item.TalentId > 0)
+                {
+                    Sims.Context.Player.ActiveTalent(Sims.Game.TalentList.First(x => x.Id == item.TalentId));
+                }
+            }
         }
         public static TEnum EnumSelect<TEnum>(string title = "")
         {
@@ -471,21 +566,8 @@ namespace CommandSims.Core
             return (TEnum)Enum.Parse(typeof(TEnum), result.Value);
         }
 
-        public static void LoadEvent(EventEntity entity)
-        {
-            if (entity != null)
-            {
-                if (entity.Selects.Any())
-                {
-                    EventSelect(entity.Selects, entity.Description);
-                }
-                else
-                {
-                    UI.PrintLine(entity.Description);
 
-                }
-            }
-        }
+
 
         #endregion
 

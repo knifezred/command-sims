@@ -1,5 +1,6 @@
 ﻿using CommandSims.Constants;
 using CommandSims.Entity;
+using CommandSims.Enums;
 using CommandSims.Utils;
 using KnifeZ.Unity.Extensions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -694,6 +695,18 @@ namespace CommandSims.Modules.Seeds
         }
         #endregion
 
+        #region 事件/天赋效果
 
+        public void InitEffectSeeds()
+        {
+            Effects.Clear();
+            Effects.Add(new EffectEntity()
+            {
+                Id = 0,
+                Type = EffectEnum.Attribute,
+                Attribute = new Players.PlayerAttribute(3, 3, 3, 3, 3, 3, 3),
+            });
+        }
+        #endregion
     }
 }

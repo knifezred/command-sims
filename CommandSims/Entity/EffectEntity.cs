@@ -17,7 +17,13 @@ namespace CommandSims.Entity
 
         public PlayerAttribute Attribute { get; set; }
 
+        public string Condition { get; set; }
         public List<ItemBase> Items { get; set; }
 
+        public EffectEntity()
+        {
+            this.Type = EffectEnum.Attribute;
+            this.Items = new List<ItemBase>();
+        }
     }
 }

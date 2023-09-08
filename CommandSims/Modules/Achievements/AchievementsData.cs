@@ -26,7 +26,7 @@ namespace CommandSims.Modules.Achievements
                 Id = id++,
                 Name = "既视感",
                 Description = "轮回了10次",
-                Grade = GradeEnum.DarkGray,
+                Grade = GradeEnum.Gray,
                 Condition = "TMS>9",
                 Opportunity = "END",
             });
@@ -44,7 +44,7 @@ namespace CommandSims.Modules.Achievements
                 Id = id++,
                 Name = "所有人都是我",
                 Description = "轮回了200次",
-                Grade = GradeEnum.DarkBlue,
+                Grade = GradeEnum.Navy,
                 Condition = "TMS>199",
                 Opportunity = "END",
             });

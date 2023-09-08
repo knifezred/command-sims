@@ -1,5 +1,7 @@
-﻿using CommandSims.Enums;
+﻿using CommandSims.Core;
+using CommandSims.Enums;
 using CommandSims.Modules.Players;
+using CommandSims.Modules.Talents;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,6 +17,10 @@ namespace CommandSims.Entity.Npc
     /// </summary>
     public class Player
     {
+        public Player()
+        {
+            this.Attribute = new PlayerAttribute();
+        }
         public int Id { get; set; }
         /// <summary>
         /// 姓名
@@ -28,6 +34,8 @@ namespace CommandSims.Entity.Npc
         public RaceEnum Race { get; set; }
 
         public PlayerAttribute Attribute { get; set; }
+
+        public List<Talent> Talents { get; set; }
 
         public int Exp { get; set; }
 
@@ -83,6 +91,19 @@ namespace CommandSims.Entity.Npc
         public void Training()
         {
 
+        }
+
+        public void ActiveTalent(Talent talent)
+        {
+            if (this.Talents == null)
+            {
+                this.Talents = new List<Talent>();
+            }
+            this.Talents.Add(talent);
+            if (talent.Effects.Any())
+            {
+                Sims.Game.ActiveEffects(talent.Effects, this.Id, talent);
+            }
         }
 
     }

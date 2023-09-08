@@ -1,4 +1,6 @@
-﻿using CommandSims.Entity.Base;
+﻿using CommandSims.Entity;
+using CommandSims.Entity.Base;
+using CommandSims.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +11,15 @@ namespace CommandSims.Modules.Events
 {
     public class EventSelectItem : SimpleListItem
     {
-        public int EventId { get; set; }
+        public int TalentId { get; set; }
 
-        public List<string> Effects { get; set; }
+        public string EventName { get; set; }
+
+        public GradeEnum Grade { get; set; }
+
+        public List<EffectEntity> Effects { get; set; }
 
         public bool Disabled { get; set; }
+
     }
 }

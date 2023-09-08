@@ -1,9 +1,11 @@
 ﻿using CommandSims.Constants;
 using CommandSims.Entity;
+using CommandSims.Entity.Npc;
 using CommandSims.Enums;
 using CommandSims.Modules.Archive;
 using CommandSims.Modules.Events;
 using CommandSims.Modules.Maps;
+using CommandSims.Modules.Talents;
 using CommandSims.Stories;
 using CommandSims.Utils;
 using KnifeZ.Unity.Extensions;
@@ -19,9 +21,15 @@ namespace CommandSims.Core
     public class GameFramework
     {
         public List<EventEntity> EventList { get; set; }
+        public List<Talent> TalentList { get; set; }
 
-        public GameFramework() {
-            LoadEvents();
+        public GameFramework()
+        {
+        }
+        public void AfterLoad()
+        {
+            TalentList = new TalentData().Talents;
+            EventList = new EventsData().Events;
         }
 
         #region 存档
@@ -135,7 +143,7 @@ namespace CommandSims.Core
                     case "exit":
                     case "退出":
                         Sims.Game.SaveArchive("AutoSaved");
-                        UI.LoadStartPanel();
+                        UI.StartPanel();
                         break;
                     case "command":
                     case "cmd":
@@ -331,24 +339,129 @@ namespace CommandSims.Core
 
         #region 事件处理
 
-        public void LoadEvents()
-        {
-            EventList = new EventsData().Events;
-
-        }
-
         public bool IsEventAvailable(int id)
         {
 
             return false;
         }
 
-        public List<EffectEntity> GetEffects(params int[] ids)
+        public EventEntity GetEvent(string name)
         {
-            return Sims.Seeds.Effects.Where(x => ids.Any(p => p == x.Id)).ToList();
+            var events = EventList.Where(x => x.Name == name).ToList();
+            var eventIndex = RandomUtils.GetNextWithWeight(events.Select(x => x.Weight).ToList());
+            return events[eventIndex];
         }
 
+        public List<EventSelectItem> GetRandomTalents(int maxCount = 10)
+        {
+            var result = new List<EventSelectItem>();
+            var talentsIndexs = RandomUtils.GetNextListWithWeight(TalentList.Select(x => x.Weight).ToList(), maxCount);
+            foreach (var index in talentsIndexs)
+            {
+                var tempTalent = TalentList.ElementAt(index);
+                result.Add(new EventSelectItem()
+                {
+                    EventName = "",
+                    Text = "[" + tempTalent.Grade.ToString() + "]" + tempTalent.Name + "[/]," + tempTalent.Description,
+                    Value = "[" + tempTalent.Grade.ToString() + "]" + tempTalent.Name + "[/]",
+                    TalentId = tempTalent.Id,
+                });
+
+            }
+            return result;
+        }
+
+        public void ActiveEffect(EffectEntity effect, int playerId = 0, Talent? talent = null)
+        {
+            var player = Sims.GetPlayer(playerId);
+            if (effect.Type == EffectEnum.Attribute)
+            {
+                if (CheckEffectCondition(effect.Condition, player))
+                {
+                    player.Attribute.Strength += effect.Attribute.Strength;
+                    player.Attribute.Perception += effect.Attribute.Perception;
+                    player.Attribute.Endurance += effect.Attribute.Endurance;
+                    player.Attribute.Charisma += effect.Attribute.Charisma;
+                    player.Attribute.Intelligence += effect.Attribute.Intelligence;
+                    player.Attribute.Agility += effect.Attribute.Agility;
+                    player.Attribute.Lucky += effect.Attribute.Lucky;
+                    if (talent != null)
+                    {
+                        UI.PrintBlueLine("天赋【" + talent.Name + "】触发," + talent.Description);
+                    }
+                }
+            }
+            if (effect.Type == EffectEnum.Talent)
+            {
+
+            }
+        }
+        public void ActiveEffects(List<EffectEntity> effects, int playerId = 0, Talent? talent = null)
+        {
+            foreach (var item in effects)
+            {
+                ActiveEffect(item, playerId, talent);
+            }
+        }
+
+        public bool CheckEffectCondition(string condition, Player player)
+        {
+            var result = true;
+            if (condition != null && condition.Any())
+            {
+                var cons = condition.Split("|");
+                foreach (var con in cons)
+                {
+                    //上一轮条件验证失败
+                    if (result == false)
+                    {
+                        break;
+                    }
+                    result = false;
+                    var corns = con.Split(":");
+                    int val = 0;
+                    if (corns[0].ToLower() == "age")
+                    {
+                        val = player.Age;
+                    }
+                    if (corns[0].ToLower() == "gender")
+                    {
+                        val = (int)player.Gender;
+                    }
+                    result = CoditionValueCompare(val, corns[1]);
+                }
+            }
+            return result;
+        }
         #endregion
+
+        public bool CoditionValueCompare(int val, string corn)
+        {
+            var op = corn[..1];
+            var val2 = corn[1..];
+            if (op == "=")
+            {
+                if (val == int.Parse(val2))
+                {
+                    return true;
+                }
+            }
+            if (op == ">")
+            {
+                if (val > int.Parse(val2))
+                {
+                    return true;
+                }
+            }
+            if (op == "<")
+            {
+                if (val < int.Parse(val2))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
     }
 }
