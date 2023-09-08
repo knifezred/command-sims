@@ -49,8 +49,6 @@ namespace CommandSims.Modules.Seeds
 
         public List<SeedEntity> SkillNameSeeds { get; set; }
 
-        public List<EffectEntity> Effects { get; set; }
-
         public SeedsData()
         {
             #region DistSeeds
@@ -588,8 +586,6 @@ namespace CommandSims.Modules.Seeds
 
             #endregion
 
-            Effects = new List<EffectEntity>();
-
         }
         public List<SeedEntity> InitializeSeed(string dist)
         {
@@ -692,20 +688,6 @@ namespace CommandSims.Modules.Seeds
                 result += SkillNameSeeds[index].Text;
             }
             return result;
-        }
-        #endregion
-
-        #region 事件/天赋效果
-
-        public void InitEffectSeeds()
-        {
-            Effects.Clear();
-            Effects.Add(new EffectEntity()
-            {
-                Id = 0,
-                Type = EffectEnum.Attribute,
-                Attribute = new Players.PlayerAttribute(3, 3, 3, 3, 3, 3, 3),
-            });
         }
         #endregion
     }
