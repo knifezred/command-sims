@@ -1,4 +1,5 @@
-﻿using CommandSims.Enums;
+﻿using CommandSims.Entity.Base;
+using CommandSims.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,39 @@ namespace CommandSims.Modules.Items
     {
         public List<WeaponItemEntity> WeaponItems;
 
-        public ItemPool() { }
+        public List<ItemEntity> AllItems;
+
+        public ItemPool()
+        {
+
+            WeaponItems = new List<WeaponItemEntity>();
+            AllItems = new List<ItemEntity>();
+        }
+
+        public void InitAllItems()
+        {
+            AllItems.Clear();
+            AllItems.Add(new ItemEntity()
+            {
+                Id = 1,
+                Name = "金元",
+                Description = "俗世流通的货币",
+                Type = ItemType.Sundries,
+                Level = GradeEnum.Orange1,
+                Weight = 0.01,
+                Price = 1,
+            });
+            AllItems.Add(new ItemEntity()
+            {
+                Id = 2,
+                Name = "灵石",
+                Description = "蕴含灵气的石头",
+                Type = ItemType.Sundries,
+                Level = GradeEnum.Yellow1,
+                Weight = 1,
+                Price = 10000,
+            });
+        }
 
         public void InitWeaponItems()
         {
@@ -19,7 +52,6 @@ namespace CommandSims.Modules.Items
             {
                 new WeaponItemEntity()
                 {
-                    Id= 1,
                     Name="练习木剑",
                     Description="即使是天才也要从一把木剑开始",
                     Level=GradeEnum.DarkGreen,

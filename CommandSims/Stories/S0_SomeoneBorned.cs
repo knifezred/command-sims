@@ -2,6 +2,7 @@
 using CommandSims.Enums;
 using CommandSims.Modules.PokerCards;
 using CommandSims.Modules.Seeds;
+using CommandSims.Utils;
 using Spectre.Console;
 using System;
 using System.Collections.Generic;
@@ -75,9 +76,10 @@ namespace CommandSims.Stories
         {
             AnsiConsole.Write(new Rule("[red]童年[/]"));
             // 出生前 自定义性别姓名种族
-            var msg = string.Format("{0},{1},你出生了", Sims.World.GetWorldTime(), Sims.Weather.Value);
+            var msg = string.Format("{0},{1},你出生了，是个{2}孩", Sims.World.GetWorldTime(), Sims.Weather.Value, Sims.Context.Player.Gender.GetEnumDisplayName());
             UI.PrintLine(msg);
             UI.LoadEvent("家境");
+
             UI.LoadEvent("抓周");
 
 

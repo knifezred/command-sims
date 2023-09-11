@@ -1,4 +1,5 @@
 ﻿using CommandSims.Entity.Npc;
+using CommandSims.Modules.Events;
 using CommandSims.Modules.Maps;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace CommandSims.Modules.Archive
 
         public Player Player { get; set; }
 
-        public int Money { get; set; }
+        public List<EventEntity> Events { get; set; }
 
         public List<ArchiveItem> BagItems { get; set; }
 

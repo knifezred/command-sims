@@ -45,7 +45,7 @@ namespace CommandSims.Service
         {
             return Task.Run(() =>
             {
-                _timer = new Timer(TimeWork, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
+                _timer = new Timer(TimeWork, null, TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(30));
             }, stoppingToken);
         }
 
@@ -54,7 +54,8 @@ namespace CommandSims.Service
             if (!UI.IsBusy())
             {
                 // 数据流转，不做任何UI操作，需玩家自信触发下一步操作，防止与ReadCommand冲突
-                AnsiConsole.MarkupLine("[gray]有什么事情发生了... [blue]look[/]查看详情[/]");
+                UI.PrintGrayLine("有什么事情发生了... [blue]look[/]查看详情");
+
 
             }
         }

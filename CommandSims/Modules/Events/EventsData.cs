@@ -31,35 +31,74 @@ namespace CommandSims.Modules.Events
                 MaxSelect = 3,
                 Selects = Sims.Game.GetRandomTalents(),
             });
+
+            #region 家境
+
             Events.Add(new EventEntity()
             {
-                Name = "天赋",
-                Description = "由于你是域外之人，出生前可选择3个天赋",
-                MaxSelect = 3,
+                Id = 1,
+                Name = "家境",
+                Description = "你出生在书香门第,自幼蒙读，智力+1，魅力+1",
                 Effects =
                 {
                     new EffectEntity()
                     {
-                        Type=EffectEnum.Talent,
-
+                        Type=EffectEnum.Attribute,
+                        Attribute=new Players.PlayerAttribute
+                        {
+                            Intelligence=1,
+                            Charisma=1,
+                        }
                     }
                 }
             });
             Events.Add(new EventEntity()
             {
+                Id = 2,
                 Name = "家境",
-                Description = "你出生在乡下"
+                Description = "你是个孤儿,吃百家饭长大。感知+1,幸运+1,体质-1",
+                Effects =
+                {
+                    new EffectEntity()
+                    {
+                        Type=EffectEnum.Attribute,
+                        Attribute=new Players.PlayerAttribute(perception:1,endurance:-1,lucky:1)
+                    }
+                }
             });
             Events.Add(new EventEntity()
             {
+                Id = 3,
                 Name = "家境",
-                Description = "你是个孤儿"
+                Description = "你出生在武学世家，自幼习武。力量+1，体质+1",
+                Effects =
+                {
+                    new EffectEntity()
+                    {
+                        Type=EffectEnum.Attribute,
+                        Attribute=new Players.PlayerAttribute(strength:1,endurance:1)
+                    }
+                }
+
             });
             Events.Add(new EventEntity()
             {
+                Id = 4,
                 Name = "家境",
-                Description = "你出生在城市"
+                Description = "你出生在玄门家族,讲经习文,丹药调理。所有属性+1",
+                Effects =
+                {
+                    new EffectEntity()
+                    {
+                        Type =EffectEnum.Attribute,
+                        Attribute=new Players.PlayerAttribute(1,1,1,1,1,1,1)
+                    }
+                },
+                Weight = 0,
             });
+
+            #endregion
+
             #region 抓周
             string babySeize = "1岁时，父母为你准备了抓周道具，你选择了";
             Events.Add(new EventEntity()
@@ -263,6 +302,8 @@ namespace CommandSims.Modules.Events
                 }
             });
             #endregion
+
+
 
             foreach (var item in Events.Where(x => x.Id == 0))
             {

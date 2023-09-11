@@ -26,9 +26,9 @@ namespace CommandSims.Modules.Players
         public int Perception { get; set; }
 
         /// <summary>
-        /// 耐力
+        /// 耐力/体质
         /// </summary>
-        [Description("耐力")]
+        [Description("体质")]
         public int Endurance { get; set; }
 
         /// <summary>

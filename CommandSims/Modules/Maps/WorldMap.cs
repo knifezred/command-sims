@@ -32,6 +32,7 @@ namespace CommandSims.Modules.Maps
                 });
                 tree.AddChild(new MapEntity()
                 {
+                    Id = 1,
                     LocationX = 0,
                     LocationY = 0,
                     Name = "小黑屋",
@@ -39,11 +40,12 @@ namespace CommandSims.Modules.Maps
                     Type = MapType.Building,
                     ExitMapId = 0,
                     IsExit = false,
-                    Locked = false,
+                    Locked = true,
                 });
                 tree.Children[0].AddChildren(new List<MapEntity>() {
                 new MapEntity()
                 {
+                    Id =2,
                     Name = "客厅-前",
                     Description = "一间漆黑的房间",
                     LocationX = 0,

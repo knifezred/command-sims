@@ -323,12 +323,12 @@ namespace CommandSims.Core
                 else
                 {
                     UI.PrintLine(entity.Description);
-
                 }
                 if (entity.Effects.Any())
                 {
                     Sims.Game.ActiveEffects(entity.Effects);
                 }
+                Console.ReadKey(true);
             }
         }
 
@@ -337,7 +337,7 @@ namespace CommandSims.Core
             var player = Sims.GetPlayer(playerId);
             if (player != null)
             {
-                PrintLine(string.Format("{0},{1},{2}岁了", Sims.WorldTime, player.Name, player.Age));
+                PrintLine(string.Format("{0},{1}{2}岁了", Sims.WorldTime, player.Name, player.Age));
             }
 
         }
@@ -371,8 +371,8 @@ namespace CommandSims.Core
                 PrintLine("------------------", ConsoleColor.Green);
                 PrintLine("姓名: " + player.Name, ConsoleColor.Cyan);
                 PrintLine("年龄: " + player.Age, ConsoleColor.Cyan);
-                PrintLine("体魄: " + player.Attribute.Strength + "        感知: " + player.Attribute.Perception
-                    + "         耐力: " + player.Attribute.Endurance + "          魅力: " + player.Attribute.Charisma
+                PrintLine("力量: " + player.Attribute.Strength + "        感知: " + player.Attribute.Perception
+                    + "         体质: " + player.Attribute.Endurance + "          魅力: " + player.Attribute.Charisma
                     + "         智力: " + player.Attribute.Intelligence + "         敏捷: " + player.Attribute.Agility
                     + "         幸运: " + player.Attribute.Lucky);
                 PrintLine("------------------", ConsoleColor.Green);

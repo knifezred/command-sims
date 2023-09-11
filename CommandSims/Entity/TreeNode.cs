@@ -47,7 +47,10 @@ namespace CommandSims.Entity
         /// <param name="action"></param>
         public void TraverseWithAutoId(TreeNode<MapEntity> node, Action<MapEntity> action)
         {
-            node.Node.Id = autoId++;
+            if (node.Node.Id == 0)
+            {
+                node.Node.Id = autoId++;
+            }
             action(node.Node);
             foreach (var child in node.Children)
             {

@@ -7,15 +7,8 @@ using System.Threading.Tasks;
 
 namespace CommandSims.Modules.Items
 {
-    public class WeaponItemEntity:ItemBase
+    public class ItemEntity : ItemBase
     {
-        public int Attack { get; set; }
-
-        public int AttackSpeed { get; set; }
-
-        public int Armor { get; set; }
-
-
 
 
     }
