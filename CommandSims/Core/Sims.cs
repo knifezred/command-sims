@@ -49,10 +49,10 @@ namespace CommandSims.Core
         {
             Context = archiveContext;
             #region 修复老存档空数据问题
-            if (Sims.Context.WorldData == null)
-            {
-                Sims.Context.WorldData = new ArchiveWorldData();
-            }
+            //if (Sims.Context.WorldData == null)
+            //{
+            //    Sims.Context.WorldData = new ArchiveWorldData();
+            //}
             #endregion
             World = new WorldFrame();
         }

@@ -1,4 +1,5 @@
 ﻿using CommandSims.Entity.Base;
+using CommandSims.Entity.Npc;
 using CommandSims.Enums;
 using CommandSims.Modules.Events;
 using CommandSims.Modules.Maps;
@@ -324,6 +325,7 @@ namespace CommandSims.Core
                 {
                     UI.PrintLine(entity.Description);
                 }
+                Sims.Context.Events.Add(entity);
                 if (entity.Effects.Any())
                 {
                     Sims.Game.ActiveEffects(entity.Effects);
@@ -368,16 +370,29 @@ namespace CommandSims.Core
             var player = Sims.GetPlayer(playerId);
             if (player != null)
             {
-                PrintLine("------------------", ConsoleColor.Green);
-                PrintLine("姓名: " + player.Name, ConsoleColor.Cyan);
-                PrintLine("年龄: " + player.Age, ConsoleColor.Cyan);
-                PrintLine("力量: " + player.Attribute.Strength + "        感知: " + player.Attribute.Perception
-                    + "         体质: " + player.Attribute.Endurance + "          魅力: " + player.Attribute.Charisma
-                    + "         智力: " + player.Attribute.Intelligence + "         敏捷: " + player.Attribute.Agility
-                    + "         幸运: " + player.Attribute.Lucky);
-                PrintLine("------------------", ConsoleColor.Green);
+                UI.PrintGreenLine("-------------");
+                var grid = new Grid();
+                for (int i = 0; i < 3; i++)
+                {
+                    grid.AddColumn();
+                }
+                grid.AddRow(new Text[] { GridText("姓名: " + player.Name), GridText("年龄: " + player.Age), GridText("") });
+                grid.AddRow(new Text[] { GridText("力量: " + player.Attribute.Strength), GridText("感知: " + player.Attribute.Perception), GridText("体质: " + player.Attribute.Endurance) });
+                grid.AddRow(new Text[] { GridText("魅力: " + player.Attribute.Charisma), GridText("智力: " + player.Attribute.Intelligence), GridText("敏捷: " + player.Attribute.Agility) });
+                grid.AddRow(new Text[] { GridText("幸运: " + player.Attribute.Lucky), GridText(""), GridText("") });
+                grid.Width = 50;
+                AnsiConsole.Write(grid);
+                UI.PrintGreenLine("-------------");
             }
+        }
 
+        public static Text GridText(string text, Color? color = null)
+        {
+            if (color == null)
+            {
+                color = Color.Green;
+            }
+            return new Text(text, new Style(color, Color.Black));
         }
         /// <summary>
         /// 显示当前地图NPC
@@ -398,7 +413,6 @@ namespace CommandSims.Core
                     }
                 }
             }
-
         }
 
         public static void ShowRoomItems(int roomId)
@@ -496,22 +510,22 @@ namespace CommandSims.Core
         public static SimpleListItem ComboSelect(List<SimpleListItem> items, string title)
         {
             var result = AnsiConsole.Prompt(new SelectionPrompt<SimpleListItem>()
-                                    .Title(title)
+                                    .Title("[green]" + title + "[/]")
                                     .PageSize(10)
                                     .AddChoices(items.ToArray())
                                     .UseConverter(x => x.Text));
 
-            AnsiConsole.MarkupLine($"{title} you choose {result.Text} !");
+            UI.PrintGreenLine($"{title} you choose {result.Text} !");
             return result;
         }
         public static void EventSelect(List<EventSelectItem> items, string title)
         {
             var result = AnsiConsole.Prompt(new SelectionPrompt<EventSelectItem>()
-                                    .Title(title)
+                                    .Title("[green]" + title + "[/]")
                                     .PageSize(10)
                                     .AddChoices(items.ToArray())
                                     .UseConverter(x => x.Text));
-            AnsiConsole.MarkupLine($"{title} 你选择了 {result.Value} !重选请按R,任意键继续...");
+            UI.PrintGreenLine($"{title} 你选择了 {result.Value} !重选请按R,任意键继续...");
             var readKey = Console.ReadKey();
             if (readKey.Key == ConsoleKey.R)
             {
@@ -522,17 +536,17 @@ namespace CommandSims.Core
         public static void EventMultiSelect(List<EventSelectItem> items, string title, int maxCount)
         {
             var result = AnsiConsole.Prompt(new MultiSelectionPrompt<EventSelectItem>()
-                                    .Title(title)
+                                    .Title("[green]" + title + "[/]")
                                     .PageSize(10)
                                     .AddChoices(items.ToArray())
                                     .UseConverter(x => x.Text));
             if (result.Count > maxCount)
             {
-                AnsiConsole.MarkupLine($"[darkorange]最多只能选择{maxCount}个!请重新选择[/]");
+                UI.PrintRedLine($"最多只能选择{maxCount}个!请重新选择");
                 EventMultiSelect(items, title, maxCount);
 
             }
-            AnsiConsole.MarkupLine($"{title} 你选择了 {result.ToSepratedString(x => x.Value)} !重选请按R,任意键继续...");
+            UI.PrintGreenLine($"{title} 你选择了 {result.ToSepratedString(x => x.Value)} !重选请按R,任意键继续...");
             var readKey = Console.ReadKey();
             if (readKey.Key == ConsoleKey.R)
             {
@@ -558,11 +572,11 @@ namespace CommandSims.Core
             }
             var items = EnumExtension.ToListItems(typeof(TEnum)).ToArray();
             var result = AnsiConsole.Prompt(new SelectionPrompt<ComboSelectListItem>()
-                                    .Title(title)
+                                    .Title("[green]" + title + "[/]")
                                     .PageSize(10)
                                     .AddChoices(items)
                                     .UseConverter(x => x.Text));
-            AnsiConsole.MarkupLine($"{title} - {result.Text}");
+            UI.PrintGreenLine($"{title} - {result.Text}");
             return (TEnum)Enum.Parse(typeof(TEnum), result.Value);
         }
 

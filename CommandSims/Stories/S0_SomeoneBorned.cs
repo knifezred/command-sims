@@ -21,7 +21,6 @@ namespace CommandSims.Stories
         public void PlayerBorn()
         {
             Sims.World.CreateNewWorld(0);
-            UI.ShowGradeColor();
             AnsiConsole.Write(new Rule("[red]序章[/]"));
             UI.PrintLine("");
             var name = AnsiConsole.Prompt(new SelectionPrompt<string>()

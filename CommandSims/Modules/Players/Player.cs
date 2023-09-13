@@ -29,6 +29,10 @@ namespace CommandSims.Entity.Npc
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// 描述
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
         /// 年龄
         /// </summary>
         public int Age { get; set; }
@@ -49,6 +53,8 @@ namespace CommandSims.Entity.Npc
         /// </summary>
         public List<Talent> Talents { get; set; }
 
+        public List<EffectEntity> Effects { get; set; }
+
         /// <summary>
         ///  经验值
         /// </summary>
@@ -62,9 +68,7 @@ namespace CommandSims.Entity.Npc
         {
             get
             {
-                // 装备
-                // 技能
-                return this.HP + 10;
+                return Attribute.Endurance * 10 + HP;
             }
         }
 
@@ -72,7 +76,7 @@ namespace CommandSims.Entity.Npc
         {
             get
             {
-                return this.MP + 10;
+                return this.Attribute.Intelligence * 10 + MP;
             }
         }
 

@@ -20,11 +20,11 @@ namespace CommandSims.Modules.Archive
 
         public Player Player { get; set; }
 
-        public List<EventEntity> Events { get; set; }
+        public List<EventEntity> Events { get; set; } = new();
 
-        public List<ArchiveItem> BagItems { get; set; }
+        public List<ArchiveItem> BagItems { get; set; } = new();
 
-        public List<ArchiveItem> StorageItems { get; set; }
+        public List<ArchiveItem> StorageItems { get; set; } = new();
 
         public MapEntity CurrentMap { get; set; }
 
