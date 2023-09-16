@@ -20,25 +20,56 @@ namespace CommandSims.Core
     {
         #region UI占用检测
 
+        /// <summary>
+        /// UI队列
+        /// </summary>
+        public static Queue<Action> QueueUI = new Queue<Action>();
+
+
         private static bool Busy = false;
 
         public static bool IsBusy()
         {
             return Busy;
         }
+
+        public static T Wait<T>(Func<T> func)
+        {
+            UI.Start();
+            var result = func();
+            UI.Stop();
+            return result;
+        }
+
+        public static void Enquene(Action action)
+        {
+            UI.QueueUI.Enqueue(action);
+        }
+
         /// <summary>
         /// 开始输出
         /// </summary>
-        public static void StartWork()
+        public static void Start()
         {
             Busy = true;
         }
         /// <summary>
         /// 停止输出
         /// </summary>
-        public static void StopWork()
+        public static void Stop()
         {
             Busy = false;
+        }
+
+        public static async void Running()
+        {
+            while (true)
+            {
+                if (QueueUI.Any() && !IsBusy())
+                {
+                    await Task.Run(QueueUI.Dequeue());
+                }
+            }
         }
         #endregion
 
@@ -286,7 +317,7 @@ namespace CommandSims.Core
         /// </summary>
         public static void StartPanel()
         {
-            UI.StartWork();
+            UI.Start();
             AnsiConsole.Write(new FigletText("Command Sims").Centered().Color(Color.Blue));
             var result = AnsiConsole.Prompt(new SelectionPrompt<string>()
                 .Title("Welcome to [red]CommansSims[/]")
@@ -295,6 +326,7 @@ namespace CommandSims.Core
                 {
                     "新的开始","继续游戏"
                 }));
+            UI.Stop();
             if (result == "继续游戏")
             {
                 Sims.Game.LoadArchive("");
@@ -370,19 +402,22 @@ namespace CommandSims.Core
             var player = Sims.GetPlayer(playerId);
             if (player != null)
             {
-                UI.PrintGreenLine("-------------");
-                var grid = new Grid();
-                for (int i = 0; i < 3; i++)
+                UI.QueueUI.Enqueue(() =>
                 {
-                    grid.AddColumn();
-                }
-                grid.AddRow(new Text[] { GridText("姓名: " + player.Name), GridText("年龄: " + player.Age), GridText("") });
-                grid.AddRow(new Text[] { GridText("力量: " + player.Attribute.Strength), GridText("感知: " + player.Attribute.Perception), GridText("体质: " + player.Attribute.Endurance) });
-                grid.AddRow(new Text[] { GridText("魅力: " + player.Attribute.Charisma), GridText("智力: " + player.Attribute.Intelligence), GridText("敏捷: " + player.Attribute.Agility) });
-                grid.AddRow(new Text[] { GridText("幸运: " + player.Attribute.Lucky), GridText(""), GridText("") });
-                grid.Width = 50;
-                AnsiConsole.Write(grid);
-                UI.PrintGreenLine("-------------");
+                    UI.PrintGreenLine("-------------");
+                    var grid = new Grid();
+                    for (int i = 0; i < 3; i++)
+                    {
+                        grid.AddColumn();
+                    }
+                    grid.AddRow(new Text[] { GridText("姓名: " + player.Name), GridText("年龄: " + player.Age), GridText("") });
+                    grid.AddRow(new Text[] { GridText("力量: " + player.Attribute.Strength), GridText("感知: " + player.Attribute.Perception), GridText("体质: " + player.Attribute.Endurance) });
+                    grid.AddRow(new Text[] { GridText("魅力: " + player.Attribute.Charisma), GridText("智力: " + player.Attribute.Intelligence), GridText("敏捷: " + player.Attribute.Agility) });
+                    grid.AddRow(new Text[] { GridText("幸运: " + player.Attribute.Lucky), GridText(""), GridText("") });
+                    grid.Width = 50;
+                    AnsiConsole.Write(grid);
+                    UI.PrintGreenLine("-------------");
+                });
             }
         }
 
@@ -394,6 +429,7 @@ namespace CommandSims.Core
             }
             return new Text(text, new Style(color, Color.Black));
         }
+
         /// <summary>
         /// 显示当前地图NPC
         /// </summary>
@@ -457,19 +493,23 @@ namespace CommandSims.Core
 
         public static void Print(string message, ConsoleColor color = ConsoleColor.Green)
         {
-            UI.StartWork();
-            Console.ForegroundColor = color;
-            Typewriter(message);
-            Console.ForegroundColor = ConsoleColor.White;
+            UI.QueueUI.Enqueue(() =>
+            {
+                Console.ForegroundColor = color;
+                Typewriter(message);
+                Console.ForegroundColor = ConsoleColor.White;
+            });
         }
 
         public static void PrintLine(string message, ConsoleColor color = ConsoleColor.Green)
         {
-            UI.StartWork();
-            Console.ForegroundColor = color;
-            Typewriter(message);
-            Console.Write("\n");
-            Console.ForegroundColor = ConsoleColor.White;
+            UI.QueueUI.Enqueue(() =>
+            {
+                Console.ForegroundColor = color;
+                Typewriter(message);
+                Console.Write("\n");
+                Console.ForegroundColor = ConsoleColor.White;
+            });
         }
 
         static void Typewriter(string message, int delay = 10)
@@ -501,6 +541,7 @@ namespace CommandSims.Core
         public static void PrintBlueLine(string message)
         {
             AnsiConsole.MarkupLine($"[blue]{message}[/]");
+
         }
         public static void PrintRedLine(string message)
         {
@@ -571,17 +612,19 @@ namespace CommandSims.Core
                 title = typeof(TEnum).GetDescription();
             }
             var items = EnumExtension.ToListItems(typeof(TEnum)).ToArray();
-            var result = AnsiConsole.Prompt(new SelectionPrompt<ComboSelectListItem>()
+            var fun = new Func<ComboSelectListItem>(() =>
+            {
+                var selectItem = AnsiConsole.Prompt(new SelectionPrompt<ComboSelectListItem>()
                                     .Title("[green]" + title + "[/]")
                                     .PageSize(10)
                                     .AddChoices(items)
                                     .UseConverter(x => x.Text));
-            UI.PrintGreenLine($"{title} - {result.Text}");
+                UI.PrintGreenLine($"{title} - {selectItem.Text}");
+                return selectItem;
+            });
+            var result = UI.Wait<ComboSelectListItem>(fun);
             return (TEnum)Enum.Parse(typeof(TEnum), result.Value);
         }
-
-
-
 
         #endregion
 

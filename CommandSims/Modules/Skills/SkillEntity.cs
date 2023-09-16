@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommandSims.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace CommandSims.Modules.Skills
 {
-    internal class SkillEntity
+    public class SkillEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 
+        public List<EffectEntity> Effects { get; set; }
 
-
+        public List<EffectEntity> AutoEffects { get; set; }
     }
 }

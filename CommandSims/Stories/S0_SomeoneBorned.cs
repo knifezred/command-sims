@@ -21,8 +21,10 @@ namespace CommandSims.Stories
         public void PlayerBorn()
         {
             Sims.World.CreateNewWorld(0);
-            AnsiConsole.Write(new Rule("[red]序章[/]"));
-            UI.PrintLine("");
+            UI.QueueUI.Enqueue(() =>
+            {
+                AnsiConsole.Write(new Rule("[red]序章[/]"));
+            });
             var name = AnsiConsole.Prompt(new SelectionPrompt<string>()
                    .Title("名字")
                    .PageSize(10)
@@ -59,15 +61,15 @@ namespace CommandSims.Stories
         public string ReRandomName()
         {
             var name = Sims.Seeds.GetRandomFullName();
-            UI.PrintLine(name);
             var reName = AnsiConsole.Prompt(new SelectionPrompt<string>()
-               .Title("继续随机")
+               .Title("[green]" + name + "[/]")
                .PageSize(10)
                .AddChoices(new string[] { "1. 随机", "2. 使用当前名字" }));
             if (reName.StartsWith("1."))
             {
                 name = ReRandomName();
             }
+            UI.PrintGreenLine("姓名：" + name);
             return name;
         }
 

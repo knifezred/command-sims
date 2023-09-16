@@ -2,6 +2,7 @@
 using CommandSims.Entity.Base;
 using CommandSims.Enums;
 using CommandSims.Modules.Players;
+using CommandSims.Modules.Skills;
 using CommandSims.Modules.Talents;
 using System;
 using System.Collections.Generic;
@@ -54,6 +55,8 @@ namespace CommandSims.Entity.Npc
         public List<Talent> Talents { get; set; }
 
         public List<EffectEntity> Effects { get; set; }
+
+        public List<SkillEntity> Skills { get; set; }
 
         /// <summary>
         ///  经验值

@@ -45,18 +45,16 @@ namespace CommandSims.Service
         {
             return Task.Run(() =>
             {
-                _timer = new Timer(TimeWork, null, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(30));
+                _timer = new Timer(TimeWork, null, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10));
             }, stoppingToken);
         }
 
         private void TimeWork(object? state)
         {
-            if (!UI.IsBusy())
+            UI.Enquene(() =>
             {
-                // 数据流转，不做任何UI操作，需玩家自信触发下一步操作，防止与ReadCommand冲突
                 UI.PrintGrayLine("有什么事情发生了... [blue]look[/]查看详情");
-
-            }
+            });
         }
     }
 }

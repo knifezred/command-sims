@@ -50,9 +50,10 @@ namespace CommandSims.Service
         {
             return Task.Run(() =>
             {
+                UI.Running();
                 UI.StartPanel();
                 // 释放UI
-                UI.StopWork();
+                UI.Stop();
                 Sims.Game.ReadCommand(Console.ReadLine(), 1);
             }, stoppingToken);
         }

@@ -157,7 +157,7 @@ namespace CommandSims.Core
                     case "move":
                     case "map":
                     case "地图":
-                        UI.LiveMap(0);
+                        UI.ShowMoveMap(0);
                         break;
                     case "open":
                     case "o":
@@ -176,7 +176,8 @@ namespace CommandSims.Core
             }
             if (eventId > 0)
             {
-                UI.StopWork();
+                // 释放UI
+                UI.Stop();
                 ReadCommand(Console.ReadLine(), eventId);
             }
         }
