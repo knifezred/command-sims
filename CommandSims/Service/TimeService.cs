@@ -51,9 +51,9 @@ namespace CommandSims.Service
 
         private void TimeWork(object? state)
         {
-            UI.Enquene(() =>
+            UI.Enqueue(() =>
             {
-                UI.PrintGrayLine("有什么事情发生了... [blue]look[/]查看详情");
+                UI.Debug("有什么事情发生了... [blue]look[/]查看详情");
             });
         }
     }

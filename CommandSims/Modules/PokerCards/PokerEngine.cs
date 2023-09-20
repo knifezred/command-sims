@@ -353,7 +353,7 @@ namespace CommandSims.Modules.PokerCards
                 }
                 else
                 {
-                    UI.PrintRedLine("请按规则出牌");
+                    UI.Error("请按规则出牌");
                     PlayCardAction(player, tableGroup);
                 }
                 player.LastOutCard = cards;

@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Xml.Linq;
 
 namespace CommandSims.Core
 {
@@ -80,7 +81,7 @@ namespace CommandSims.Core
                     UI.PrintLine("存档加载成功");
                     Sims.Reload(archiveData);
                     Sims.World.GoRandomWeather();
-                    UI.ShowPlayerInfo(0);
+                    UI.PlayerInfoPanel(0);
                 }
                 else
                 {
@@ -122,8 +123,9 @@ namespace CommandSims.Core
 
         #region 通用指令
 
-        public void ReadCommand(string? command, int eventId)
+        public void ReadCommand(int eventId)
         {
+            var command = AnsiConsole.Prompt(new TextPrompt<string>("[blue]>[/]").AllowEmpty());
             if (command != null)
             {
                 var commands = command.Split(" ");
@@ -169,16 +171,14 @@ namespace CommandSims.Core
                     case "学":
                         break;
                     default:
-                        UI.PrintLine("无效指令，请重新输入,help查看可用指令", ConsoleColor.DarkGray);
+                        UI.Debug("无效指令，请重新输入,help查看可用指令");
                         break;
                 }
 
             }
             if (eventId > 0)
             {
-                // 释放UI
-                UI.Stop();
-                ReadCommand(Console.ReadLine(), eventId);
+                ReadCommand(eventId);
             }
         }
 
@@ -188,7 +188,7 @@ namespace CommandSims.Core
         /// </summary>
         public void PlayerCommandAction()
         {
-            var action = UI.EnumSelect<PlayerActionEnum>("[green]你可进行如下操作[/]");
+            var action = UI.EnumSelect<PlayerActionEnum>("你可进行如下操作");
             switch (action)
             {
                 case PlayerActionEnum.DoNothing:
@@ -388,7 +388,7 @@ namespace CommandSims.Core
                     player.Attribute.Lucky += effect.Attribute.Lucky;
                     if (talent != null)
                     {
-                        UI.PrintBlueLine("天赋【" + talent.Name + "】触发," + talent.Description);
+                        UI.Warning("天赋【" + talent.Name + "】触发," + talent.Description);
                     }
                 }
             }
