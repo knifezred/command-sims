@@ -35,6 +35,7 @@ namespace CommandSims.Core
                 if (!IsBusy())
                 {
                     Task.Run(action).Wait();
+                    Task.Delay(10).Wait();
                     break;
                 }
             }

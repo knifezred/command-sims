@@ -32,7 +32,7 @@ namespace CommandSims.Modules.Events
                 Selects = Sims.Game.GetRandomTalents(),
             });
 
-            #region 家境
+            #region 家境 1-4
 
             Events.Add(new EventEntity()
             {
@@ -99,10 +99,11 @@ namespace CommandSims.Modules.Events
 
             #endregion
 
-            #region 抓周
+            #region 抓周 10-19
             string babySeize = "1岁时，父母为你准备了抓周道具，你选择了";
             Events.Add(new EventEntity()
             {
+                Id = 10,
                 Name = "抓周",
                 Description = babySeize + "一把小刀,全属性+1。",
                 Effects =
@@ -122,10 +123,12 @@ namespace CommandSims.Modules.Events
                     }
                 }
             });
+
             Events.Add(new EventEntity()
             {
+                Id = 11,
                 Name = "抓周",
-                Description = babySeize + "一把算盘,智力+3。",
+                Description = babySeize + "一把算盘,智力+2。",
                 Effects =
                 {
                     new EffectEntity(){
@@ -139,6 +142,7 @@ namespace CommandSims.Modules.Events
             });
             Events.Add(new EventEntity()
             {
+                Id = 12,
                 Name = "抓周",
                 Description = babySeize + "一面镜子,魅力+2。",
                 Effects =
@@ -152,11 +156,92 @@ namespace CommandSims.Modules.Events
                     }
                 }
             });
+            Events.Add(new EventEntity()
+            {
+                Id = 13,
+                Name = "抓周",
+                Description = babySeize + "一柄如意,运气+2。",
+                Effects =
+                {
+                    new EffectEntity(){
+                        Type=EffectEnum.Attribute,
+                        Attribute=new Players.PlayerAttribute()
+                        {
+                            Lucky=2,
+                        }
+                    }
+                }
+            });
+            Events.Add(new EventEntity()
+            {
+                Id = 14,
+                Name = "抓周",
+                Description = babySeize + "一双鞋子,敏捷+2。",
+                Effects =
+                {
+                    new EffectEntity(){
+                        Type=EffectEnum.Attribute,
+                        Attribute=new Players.PlayerAttribute()
+                        {
+                            Agility=2,
+                        }
+                    }
+                }
+            });
+            Events.Add(new EventEntity()
+            {
+                Id = 15,
+                Name = "抓周",
+                Description = babySeize + "一个包子,体质+2。",
+                Effects =
+                {
+                    new EffectEntity(){
+                        Type=EffectEnum.Attribute,
+                        Attribute=new Players.PlayerAttribute()
+                        {
+                            Endurance=2,
+                        }
+                    }
+                }
+            });
+            Events.Add(new EventEntity()
+            {
+                Id = 16,
+                Name = "抓周",
+                Description = babySeize + "一把大锤,力量+3。",
+                Effects =
+                {
+                    new EffectEntity(){
+                        Type=EffectEnum.Attribute,
+                        Attribute=new Players.PlayerAttribute()
+                        {
+                            Strength=3,
+                        }
+                    }
+                }
+            });
+            Events.Add(new EventEntity()
+            {
+                Id = 17,
+                Name = "抓周",
+                Description = babySeize + "一副眼镜,感知+2。",
+                Effects =
+                {
+                    new EffectEntity(){
+                        Type=EffectEnum.Attribute,
+                        Attribute=new Players.PlayerAttribute()
+                        {
+                            Perception =2,
+                        }
+                    }
+                }
+            });
 
             Events.Add(new EventEntity()
             {
+                Id = 18,
                 Name = "抓周",
-                Description = babySeize + "一把小刀,全属性+3。",
+                Description = babySeize + "一把键盘,全属性+3。",
                 Effects =
                 {
                     new EffectEntity(){
@@ -176,132 +261,32 @@ namespace CommandSims.Modules.Events
             });
             Events.Add(new EventEntity()
             {
+                Id = 19,
                 Name = "抓周",
-                Description = babySeize + "一把小刀,全属性+3。",
+                Description = babySeize + "一本经书,智力+2,感知+1。",
                 Effects =
                 {
                     new EffectEntity(){
                         Type=EffectEnum.Attribute,
                         Attribute=new Players.PlayerAttribute()
                         {
-                            Agility=3,
-                            Charisma=3,
-                            Endurance=3,
-                            Intelligence=3,
-                            Lucky=3,
-                            Perception =3,
-                            Strength=3,
-                        }
-                    }
-                }
-            });
-            Events.Add(new EventEntity()
-            {
-                Id = 10,
-                Name = "抓周",
-                Description = babySeize + "一把小刀,全属性+3。",
-                Effects =
-                {
-                    new EffectEntity(){
-                        Type=EffectEnum.Attribute,
-                        Attribute=new Players.PlayerAttribute()
-                        {
-                            Agility=3,
-                            Charisma=3,
-                            Endurance=3,
-                            Intelligence=3,
-                            Lucky=3,
-                            Perception =3,
-                            Strength=3,
-                        }
-                    }
-                }
-            });
-            Events.Add(new EventEntity()
-            {
-                Name = "抓周",
-                Description = babySeize + "一把小刀,全属性+3。",
-                Effects =
-                {
-                    new EffectEntity(){
-                        Type=EffectEnum.Attribute,
-                        Attribute=new Players.PlayerAttribute()
-                        {
-                            Agility=3,
-                            Charisma=3,
-                            Endurance=3,
-                            Intelligence=3,
-                            Lucky=3,
-                            Perception =3,
-                            Strength=3,
-                        }
-                    }
-                }
-            });
-            Events.Add(new EventEntity()
-            {
-                Name = "抓周",
-                Description = babySeize + "一把小刀,全属性+3。",
-                Effects =
-                {
-                    new EffectEntity(){
-                        Type=EffectEnum.Attribute,
-                        Attribute=new Players.PlayerAttribute()
-                        {
-                            Agility=3,
-                            Charisma=3,
-                            Endurance=3,
-                            Intelligence=3,
-                            Lucky=3,
-                            Perception =3,
-                            Strength=3,
-                        }
-                    }
-                }
-            });
-            Events.Add(new EventEntity()
-            {
-                Name = "抓周",
-                Description = babySeize + "一把小刀,全属性+3。",
-                Effects =
-                {
-                    new EffectEntity(){
-                        Type=EffectEnum.Attribute,
-                        Attribute=new Players.PlayerAttribute()
-                        {
-                            Agility=3,
-                            Charisma=3,
-                            Endurance=3,
-                            Intelligence=3,
-                            Lucky=3,
-                            Perception =3,
-                            Strength=3,
-                        }
-                    }
-                }
-            });
-            Events.Add(new EventEntity()
-            {
-                Name = "抓周",
-                Description = babySeize + "一把小刀,全属性+3。",
-                Effects =
-                {
-                    new EffectEntity(){
-                        Type=EffectEnum.Attribute,
-                        Attribute=new Players.PlayerAttribute()
-                        {
-                            Agility=3,
-                            Charisma=3,
-                            Endurance=3,
-                            Intelligence=3,
-                            Lucky=3,
-                            Perception =3,
-                            Strength=3,
+                            Intelligence=2,
+                            Perception =1,
                         }
                     }
                 }
             });
             #endregion
+
+            #region MyRegion
+            Events.Add(new EventEntity()
+            {
+                Id = 20,
+                Name = "",
+                Description = "",
+            });
+            #endregion
+
 
 
 
